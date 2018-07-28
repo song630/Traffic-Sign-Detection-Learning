@@ -1,0 +1,26 @@
+关于RPN网络等
+=====
+1.感受野定义 receptive field (RF)
+  每层输出的特征图上的像素点在原始图像上映射的区域大小
+2.感受野计算
+  (1)第一层卷积输出特征图像素的感受野的大小等于filter的大小
+　(2)深层卷积层的感受野大小和它之前所有层的filter大小和步长有关系
+　(3)不考虑padding的大小
+  (每个卷积层的strides是之前所有层stride的乘积)
+3.计算感受野算法:
+  先计算最深层在前一层上的感受野 然后逐渐传递到第一层
+  RF = 1 # 待计算的feature map上的感受野大小
+  for layer in (top layer To down layer):
+　    RF = ((RF-1)* stride) + filter_size
+=====
+4.RPN结构:
+  input -> ConvNet -> 2个1*1卷积层 -> 回归和分类(target/not a target)
+  一路输出是目标和非目标的概率
+  另一路输出box相关的四个参数
+5.RPN中的anchor:
+  需要多个尺度的滑窗
+  Anchor给出一个基准窗大小 按照倍数和长宽比例得到不同大小窗
+  e.g.基准窗大小16 给了(8,16,32)3种倍数和(0.5,1,2)3种比例 共有9种尺度的anchor
+6.RPN的2路输出有2个loss function
+  faster RCNN的最后有2个loss function
+  所以faster RCNN共有4个loss function

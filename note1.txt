@@ -1,0 +1,56 @@
+关于Faster-RCNN:
+1.object detection技术的演进:
+  RCNN->SppNET->Fast-RCNN->Faster-RCNN
+2.detection = classification + locaization(bounding box)
+  检测定位: 检测评价函数 intersection-over-union (IOU)
+  classification: 用CNN
+  detection: 实际是确定bounding box的4个参数
+3.解决方法1:
+  AlexNet VGG GoogLenet选一个
+  在上述神经网络的尾部展开
+  成为classification + regression模式
+  问题: regression难做 应转换为classification问题
+4.解决方法2:
+  取不同大小框 让框出现在不同的位置 得出这个框的得分
+  找出可能含有物体的框: 即候选框(可以互相重叠)
+  (选定候选框的方法有EdgeBoxes, Selective Search)
+5.(补充)fine-tuning微调
+  若有调整 重新训练网络十分复杂
+  流程:
+  (1)修改网络最后一层的输出类别 加快最后一层的参数学习速率
+  (2)调整学习速率 步长 迭代次数
+  (3)加载pretrained模型的参数 启动训练
+6.RCNN
+  input->ROI->warped image regions->ConvNet->SVM和Bbox reg
+  --(扭曲和仿射的区别?)
+  对一个分类模型(如AlexNet)做fine-tuning
+  selective search提取所有候选框
+  将候选框提取到的特征存到硬盘
+  训练一个SVM二分类分类器来判断候选框里物体的类别(positive or negative)
+  对每一个类 训练一个线性回归模型 判定框是否框得合适
+7.SPP Net(Spatial Pyramid Pooling)
+  RCNN的输入大小必须固定
+  SPP Net允许不同尺寸
+  在卷积层和全连接层之间加入了SPP layer
+  2点改进:
+  (1)SPP layer中每个pooling的filter会根据输入调整大小 输出尺度始终是固定的
+     R-CNN中，每个候选框统一大小后分别在CNN中计算
+  (2)SPP Net只对原图进行一次卷积得到整张图的feature map
+     然后找到每个候选框在feature map上的映射patch
+     将此patch作为每个候选框的特征输入到SPP layer和之后的层
+8.Fast R-CNN
+  input->ConvNet->Regions of interest->ROI pooling->FC layers->回归和softmax
+  改进: 对于input image不再先提取候选 改为ROI pooling层
+  这个网络层可以把不同大小的特征输入映射到一个固定尺度的特征向量
+  对每个region都提取一个固定维度的特征
+9.Faster R-CNN
+  Fast R-CNN存在的问题: 找候选框费时
+  加入一个提取边缘的神经网络 找候选框的工作也交给神经网络
+  =====
+  Region Proposal Network(RPN):
+  (1)将RPN放在最后一个卷积层的后面
+　(2)RPN直接训练得到候选区域
+  (3)在feature map上滑动窗口
+  (4)建一个神经网络用于物体分类+框位置的回归
+  =====
+  image->CNN->(feature map)->RPN->proposals->ROI pooling->classifier
