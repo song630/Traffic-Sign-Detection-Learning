@@ -1,6 +1,6 @@
 ### Traffic-Sign-Detection-Learning
 ---
-1. choose `Faster RCNN` or `mask RCNN` (rewrite and run)
+1. choose `Faster RCNN` or `Mask RCNN` (rewrite and run)
 2. understand `RolAlign` & `RolPooling`
 3. read two papers:
 
