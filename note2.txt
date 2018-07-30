@@ -24,3 +24,17 @@
 6.RPN的2路输出有2个loss function
   faster RCNN的最后有2个loss function
   所以faster RCNN共有4个loss function
+=====
+1.超参数:
+  学习率、权重衰减、动量被称为超参数 因为它们不是由网络训练而得到的参数
+  learning rate, weight decay, momentum
+2.参数组:
+  optimizer通过param_group来管理参数组
+  param_group中保存了参数组及其对应的学习率 动量等
+  不同参数组以字典实例的形式放在数组里(类似json)
+  可以有多个参数组 比如model.base.parameters, model.classifier.parameters()
+  例子:
+  optim.SGD([
+      {'params': model.base.parameters()},
+      {'params': model.classifier.parameters(), 'lr': 1e-3}
+  ], lr=1e-2, momentum=0.9)
