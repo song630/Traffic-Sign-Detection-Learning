@@ -111,7 +111,7 @@ IOU小于0.3的判定为背景
   RPN_BATCHSIZE: 前景和背景anchor的总数(256)
   RPN_FG_FRACTION:
   ===
-  输出: 较好的bbox好对应的label + 目标回归系数
+  输出: 较好的bbox和对应的label + 目标回归系数
 11.计算分类层的loss function
   classification loss = classification loss + bbox regression loss
   --和RPN-loss的根本区别是前者只有前景/背景这2个类
