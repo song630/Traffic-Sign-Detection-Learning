@@ -184,6 +184,8 @@ if __name__ == '__main__':
 
   print('load model successfully!')
   # initilize the tensor holder here.
+  # 下面4个变量分别表示:
+  # 图片 图片的尺寸 box数量 ground-truth的box
   im_data = torch.FloatTensor(1)
   im_info = torch.FloatTensor(1)
   num_boxes = torch.LongTensor(1)
@@ -230,7 +232,7 @@ if __name__ == '__main__':
   # === 后面的data[0]-data[4]的内容由roidb决定
   dataset = roibatchLoader(roidb, ratio_list, ratio_index, 1, \
                         imdb.num_classes, training=False, normalize=False)
-  dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, # 注意batch size = 1
+  dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, # === 注意batch size = 1
                             shuffle=False, num_workers=0, pin_memory=True)
   # 这里没有像trainval文件里那样用sampler类
   data_iter = iter(dataloader)
@@ -265,69 +267,79 @@ if __name__ == '__main__':
       RCNN_loss_cls, RCNN_loss_bbox, \
       rois_label = fasterRCNN(im_data, im_info, gt_boxes, num_boxes)
 
-      scores = cls_prob.data
+      scores = cls_prob.data # 属于各个类的概率/评分
       boxes = rois.data[:, :, 1:5] # ??
 
-      if cfg.TEST.BBOX_REG: # BBOX_REG: Train bounding-box regressors
+      if cfg.TEST.BBOX_REG: # BBOX_REG: Train bounding-box regressors 训练bbox的回归器
           # Apply bounding-box regression deltas
           box_deltas = bbox_pred.data # 预测值
           # Optionally normalize targets by a precomputed mean and stdev ??
           # stdev: 标准差
           if cfg.TRAIN.BBOX_NORMALIZE_TARGETS_PRECOMPUTED:
+          	# 只有在训练了回归器、标准差、方差的前提下才能在测试图片上标注
           	# class_agnostic: whether perform class_agnostic bbox regression
-            if args.class_agnostic:
+            if args.class_agnostic: # 不用标注具体类别 只识别物体
+            	# 乘上标准差再加上方差 得到较准确的bbox
                 box_deltas = box_deltas.view(-1, 4) * torch.FloatTensor(cfg.TRAIN.BBOX_NORMALIZE_STDS).cuda() \
                            + torch.FloatTensor(cfg.TRAIN.BBOX_NORMALIZE_MEANS).cuda()
                 box_deltas = box_deltas.view(1, -1, 4)
-            else:
+            else: # 不仅要识别物体 还要标注类别
+            	# 乘上标准差再加上方差 得到较准确的bbox
                 box_deltas = box_deltas.view(-1, 4) * torch.FloatTensor(cfg.TRAIN.BBOX_NORMALIZE_STDS).cuda() \
                            + torch.FloatTensor(cfg.TRAIN.BBOX_NORMALIZE_MEANS).cuda()
+                # *4的原因是bbox有4个回归系数
+                # 下面的一步可能是对于一个bbox 对每个class都计算4个回归系数 取score最大的或者用mask过滤
+                # 可能组成一个高度为bbox数量 宽度为4*class数量的矩阵
                 box_deltas = box_deltas.view(1, -1, 4 * len(imdb.classes))
 
-          pred_boxes = bbox_transform_inv(boxes, box_deltas, 1)
-          pred_boxes = clip_boxes(pred_boxes, im_info.data, 1)
-      else:
+          pred_boxes = bbox_transform_inv(boxes, box_deltas, 1) # ??
+          pred_boxes = clip_boxes(pred_boxes, im_info.data, 1) # 根据图片的尺寸信息(im_info)裁剪图片外的box
+      else: # 没有训练回归器的情形
           # Simply repeat the boxes, once for each class
+          # tile()是沿某个维度复制数组的元素 这里是对于每个类都复制一次 ??
           pred_boxes = np.tile(boxes, (1, scores.shape[1]))
 
       pred_boxes /= data[1][0][2]
 
+      # 把shape中为1的维度去掉
       scores = scores.squeeze()
       pred_boxes = pred_boxes.squeeze()
       det_toc = time.time()
       detect_time = det_toc - det_tic
       misc_tic = time.time()
       if vis:
-          im = cv2.imread(imdb.image_path_at(i))
-          im2show = np.copy(im)
-      for j in xrange(1, imdb.num_classes):
-          inds = torch.nonzero(scores[:,j]>thresh).view(-1)
+          im = cv2.imread(imdb.image_path_at(i)) # opencv读入图片
+          im2show = np.copy(im) # 图片转为numpy中的数组
+      for j in xrange(1, imdb.num_classes): # 遍历每个class
+          inds = torch.nonzero(scores[:, j] > thresh).view(-1) # 取得分高于阈值的类的索引
           # if there is det
-          if inds.numel() > 0:
-            cls_scores = scores[:,j][inds]
-            _, order = torch.sort(cls_scores, 0, True)
-            if args.class_agnostic:
-              cls_boxes = pred_boxes[inds, :]
-            else:
-              cls_boxes = pred_boxes[inds][:, j * 4:(j + 1) * 4]
+          if inds.numel() > 0: # numel(): 返回张量中所有元素的个数
+            cls_scores = scores[:, j][inds] # 取出这些高于阈值的类的得分
+            _, order = torch.sort(cls_scores, 0, True) # 把得分排序
+            if args.class_agnostic: # 要在测试图片上标注每一个类
+              cls_boxes = pred_boxes[inds, :] # 在预测的boxes中取出所有得分高于阈值的box的位置信息
+            else: # 只识别不标注
+              cls_boxes = pred_boxes[inds][:, j * 4:(j + 1) * 4] # ??
             
-            cls_dets = torch.cat((cls_boxes, cls_scores.unsqueeze(1)), 1)
+            cls_dets = torch.cat((cls_boxes, cls_scores.unsqueeze(1)), 1) # 把box和对应的得分组合起来
             # cls_dets = torch.cat((cls_boxes, cls_scores), 1)
-            cls_dets = cls_dets[order]
-            keep = nms(cls_dets, cfg.TEST.NMS)
-            cls_dets = cls_dets[keep.view(-1).long()]
+            cls_dets = cls_dets[order] # 按照order排序
+            keep = nms(cls_dets, cfg.TEST.NMS) # 非极大值抑制
+            cls_dets = cls_dets[keep.view(-1).long()] # 经过NMS筛选
             if vis:
-              im2show = vis_detections(im2show, imdb.classes[j], cls_dets.cpu().numpy(), 0.3)
+              im2show = vis_detections(im2show, imdb.classes[j], cls_dets.cpu().numpy(), 0.3) # ??
             all_boxes[j][i] = cls_dets.cpu().numpy()
-          else:
+          else: # 没有得分高于阈值的
             all_boxes[j][i] = empty_array
 
       # Limit to max_per_image detections *over all classes*
+      # 可能是每张图片最多识别出的box的数量
+      # (下面没有细看)
       if max_per_image > 0:
           image_scores = np.hstack([all_boxes[j][i][:, -1]
                                     for j in xrange(1, imdb.num_classes)])
-          if len(image_scores) > max_per_image:
-              image_thresh = np.sort(image_scores)[-max_per_image]
+          if len(image_scores) > max_per_image: # 如果超过了
+              image_thresh = np.sort(image_scores)[-max_per_image] # 就重新定一个阈值
               for j in xrange(1, imdb.num_classes):
                   keep = np.where(all_boxes[j][i][:, -1] >= image_thresh)[0]
                   all_boxes[j][i] = all_boxes[j][i][keep, :]
@@ -341,15 +353,15 @@ if __name__ == '__main__':
 
       if vis:
           cv2.imwrite('result.png', im2show)
-          pdb.set_trace()
+          pdb.set_trace() # 调试
           #cv2.imshow('test', im2show)
           #cv2.waitKey(0)
 
   with open(det_file, 'wb') as f:
-      pickle.dump(all_boxes, f, pickle.HIGHEST_PROTOCOL)
+      pickle.dump(all_boxes, f, pickle.HIGHEST_PROTOCOL) # 把检测到的box标注在图片上
 
   print('Evaluating detections')
-  imdb.evaluate_detections(all_boxes, output_dir)
+  imdb.evaluate_detections(all_boxes, output_dir) # ??
 
   end = time.time()
   print("test time: %0.4fs" % (end - start))
