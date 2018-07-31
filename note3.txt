@@ -1,0 +1,170 @@
+关于Tutorial.pdf:
+=====
+正样本(前景)取128个 负样本(背景)取128个
+IOU超过0.7的判定为前景
+IOU小于0.3的判定为背景
+剩余的大量样本属于don't care
+正样本数大于128时从中随机选一些
+负样本数过多时使用一个01组成的mask过滤掉128个负样本之外的
+=====
+1.预处理 --分为2步
+  (均值向量原本指对于图像矩阵的每一列都计算出一个均值 最后图像的每一列都是相同的值
+  但这里的均值是提前定义好的 对于任何数据集都一样)
+  (原因: 计算梯度下降时 若输入的x很大 那么传递的梯度也很大 学习率不好选择)
+  所有图片要减去一个均值向量
+  类似一种归一化操作
+  =====
+  Rescale: 根据targetSize, maxSize
+  要确定一个图片的缩放比例 scale
+  scale = targetSize / min(w, h)
+  但缩放以后不能超过maxSize
+  (只有在训练的时候需要统一图片尺寸 inference阶段不需要)
+  (训练的时候是按照batch 每个batch中的图片都必须为一个尺寸)
+=====
+--以下都是training阶段
+1.关于训练集的信息
+  通过annnotation目录中的标注文件(.xml 一张图片对应一个文件)获取gt的bbox坐标
+  数据集是PASCAL VOC 2007 有20个class
+2.bbox的回归系数
+  将粗略的bbox的4个参数与4个回归系数做变换得到与实际物体结合得更紧密的bbox
+  坐标 original: Ox, Oy, Ow, Oh
+  坐标 target:   Tx, Ty, Tw, Th
+  regression targets(变换函数的系数): tx, ty, tw, th(由前面的8个变量推得)
+  (公式见pdf-page5)
+3.训练阶段网络的层次结构:
+  --anchor-generation-layer:
+  (1)generate anchors
+     产生固定数目的anchor(bbox)
+	 每一个坐标点对应9个anchors(3 scales * 3 ratios)
+  --region-proposal-layer:
+  (2)proposal layer
+     用回归系数来变换这些anchor
+	 使用NMS来过滤
+  (3)anchor target layer
+     产生较好的anchor, labels, 回归系数: 用于训练RPN
+	 前景anchor: 和任意gt box的IoU超过了阈值
+	 背景anchor: 和所有gt box的IoU都小于阈值
+	 还输出回归系数
+  (4)compute RPN loss
+     loss function: 将bbox正确分类为前景/背景的比例 + 预测的和实际回归系数的差距
+  (5)proposal target layer
+     过滤输入的anchors 产生"类特定"的bbox回归目标
+  --ROI-pooling-layer:
+  (6)ROI pooling
+     在feature map上找到对应的bbox并取样(取样指从每个bbox patch中取出一部分面积)
+	 输出所有feature map上的bbox块
+  --classification-layer:
+  (7)classification layer
+     将上一层产生的输出通过若干卷积层
+	 最终通过2个全连接层: 分别产生属于各个类的概率分布和回归系数
+  (8)classification loss
+     loss function: 分类正确的bbox所占的比例 + 目标和预测的回归系数的差距
+	 --和前面的loss-function的根本差别是前面的只有2个类(前景和背景)
+4.anchor-generation-layer:
+  这里产生的bbox的数目尺寸位置对于所有图片都是一样的
+  给出ratio set, scale set相乘就是anchor的种类数
+  给出stride(16) 对应图像中grid的最小单位
+  grid中的点数: 800/16 * 600/16 = 1900
+  总anchor数: 1900 * 9 = 17100
+  --有一些box在图片外部(后面要crop掉)
+  (对应pdf-page8)
+5.region-proposal-layer:
+  (1)从所有anchor中辨识前景和背景anchor(分类)
+  (2)利用回归系数变换anchor 提升它们的质量
+  (3)由RPN和3个层组成(即上面列出的):
+     proposal layer, anchor target layer, proposal target layer.
+6.RPN:
+  (结构图见pdf-page10)
+  最前面是rpn_net 后面分成2路: rpn_cls_score_net, rpn_bbx_pred_net
+  前面的rpn_net要通过一个卷积层
+  分成2路时各自经过一个(1, 1)卷积层
+  rpn_cls_score_net: 前景背景分类 -> 得分 -> 通过softmax得到概率
+  rpn_bbx_pred_net: 回归 变换 reshape
+7.proposal layer(3层中第1层):
+  --这层之前不仅有整个网络的第1层anchor-generation-layer还有RPN
+  以最前面的anchor-generation-layer产生的anchors作为输入
+  用NMS过滤 产生变换后的bbox(利用RPN产生的回归系数)
+  输入: anchors, rpn_bbx_pred(RPN一路输出), rpn_cls_prob(RPN另一路输出)
+  输出: ROI scores, ROIs(变换后的anchors, 代码中叫blobs)
+8.anchor target layer(3层中第2层):
+  产生较好的anchor来训练RPN
+  ??
+9.计算RPN loss
+  RPN loss = classification loss(前景背景) + bbox regression loss
+  classification loss = cross_entropy(predicted class, actual class)(交叉熵)
+  bbox regression loss = 所有前景anchor的回归loss之和
+  一个前景anchor的回归loss = 预测的4个回归系数和目标的回归系数的距离(smooth函数)
+  (公式见pdf-page12)
+  --用一个mask矩阵(代码中叫bbox_inside_weights)来筛出所有的前景anchor
+10.anchor target layer(3层中第2层):
+  根据anchor和gt boxes的IoU选出2类判定为前景的bbox:
+  type A: (对于每个gt box)与一个gt box达到最大IoU的
+  type B: (对于每个anchor box)与某些gt box的IoU超过阈值的
+  (结合pdf-page13的图理解)
+  背景box: overlap小于一个负的阈值
+  符合条件的前景bbox太多时(超过128): 随机选择一些去掉
+  之后对于选出的前景bbox计算回归系数
+  ===
+  一些程序中的参数:
+  RPN_POSITIVE_OVERLAP: 判定为前景的阈值
+  RPN_NEGATIVE_OVERLAP: 判定为背景的阈值
+  RPN_BATCHSIZE: 前景和背景anchor的总数(256)
+  RPN_FG_FRACTION:
+  ===
+  输出: 较好的bbox好对应的label + 目标回归系数
+11.计算分类层的loss function
+  classification loss = classification loss + bbox regression loss
+  --和RPN-loss的根本区别是前者只有前景/背景这2个类
+  classification loss: 预测类与正确的类的交叉熵:
+  每个样本和每一个类的得分组成了一个二维矩阵 (公式见pdf-page14)
+  --要使用一个mask来筛选标记出一个anchor对应的类
+12.proposal target layer(3层中第3层)
+  3层中第1层输出了ROI scores, ROIs
+  这层的目的是选出一部分ROIs 它们要再做crop pooling
+  把ROIs再次分成前景和背景2类 计算ROIs的回归系数
+  (过程见pdf-page16图) ROIs共有N个
+  所有回归系数组成一个矩阵: 行数就是ROIs的N 列数是类的个数*4
+  每个ROI只在对应类的那一行有4个回归系数
+  输出: 筛选过的ROIs和"类特定"的回归系数
+  ===
+  程序中的参数:
+  FG_THRESH: 用于选择前景ROI
+  BG_THRESH_HI, BG_THRESH_LO: 介于之间为背景ROI
+  BATCH_SIZE: 128
+  FG_FRACTION:
+  ===
+13.crop pooling: --region-extraction
+  从卷积层的feature map中取出前面层输出的ROI对应的区域
+  basic idea: 使用一个2*3仿射矩阵将输入做变换从而得到区域
+  步骤:
+  (1)做仿射变换 得到"源坐标"
+  (2)在"源坐标"的位置取样(使用一个取样核)(取样是在ROI区域中选一个矩形)
+  PyTorch中完成以上两步对应的函数: affine_grid, grid_sample
+  具体步骤:
+  (1)按照stride分割ROIs
+  (2)为了使用上面的2个内置函数 要计算出变换矩阵
+  (3)目标feature map的尺寸为code中的POOLING_SIZE=7
+     在取样中所有ROI都经过warp变成了尺寸为常数的正方形(因为后面是全连接)
+  (具体推导见pdf-page18)
+14.classification layer
+  上一层网络的输入是若干来自proposal target layer的ROI + feature map
+  经过crop pooling输出若干正方形feature map
+  之后它们通过了ResNet
+  结果是对每个ROI产生了一个一维特征向量
+  (网络结构图见pdf-page19 包含了上面一层和这一层)
+  这个特征向量再通过2个全连接层分支: bbox_pred_net, cls_score_net
+  (续图见pdf-page20)
+  (1)分支1: cls_score_net 又产生2个分支: softmax的cls_prop + max的cls_pred
+  (2)分支2: bbox_pred_net 与std_dev, mean计算产生Final bbox坐标
+=====
+--以下为inference阶段:
+(网络结构图见pdf-page21)
+区别: 没有anchor target layer, proposal target layer
+      RPN已经能够将anchor分类为前景/背景
+=====
+最后: NMS
+目的是减少候选box的数量
+overlap超过一定阈值的都舍弃
+遍历图中所有box
+有2种方式: 按照y坐标排序 按照score排序
+2种方式最后保留的box不同(示例见pdf-page25)

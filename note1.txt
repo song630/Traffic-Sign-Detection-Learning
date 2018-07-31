@@ -1,7 +1,7 @@
 关于Faster-RCNN:
 1.object detection技术的演进:
   RCNN->SppNET->Fast-RCNN->Faster-RCNN
-2.detection = classification + locaization(bounding box)
+2.detection = classification + localization(bounding box)
   检测定位: 检测评价函数 intersection-over-union (IOU)
   classification: 用CNN
   detection: 实际是确定bounding box的4个参数
