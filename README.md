@@ -1,7 +1,7 @@
 ### Traffic-Sign-Detection-Learning
 ---
 1. choose `Faster RCNN` or `Mask RCNN` (rewrite and run)
-2. understand `RolAlign` & `RolPooling`
+2. understand `ROIAlign` & `ROIPooling`
 3. read two papers:
 
 [Co-domain Embedding using Deep Quadruplet Networks for Unseen Traffic Sign Recognition](https://arxiv.org/pdf/1712.01907.pdf)
