@@ -1,0 +1,42 @@
+ROI-Pooling, ROI-Align, ROI-Warping
+1.ROI-Pooling:
+  原图ROI区域映射到卷积区域
+  pooling到固定大小
+  pooling把该区域尺寸归一化成卷积网络输入的尺寸
+  ===
+  (以下内容来自博客 https://blog.csdn.net/lanran2/article/details/60143861 )
+  (1)在Fast-RCNN中 RoI是指Selective Search完成后得到的"候选框"在特征图上的映射
+  (2)在Faster-RCNN中 候选框是RPN产生的 再把各个"候选框"映射到特征图上得到RoIs
+  pipeline:
+  (1)原图上有若干个候选框
+  (2)候选框映射在经过CNN的特征图上得到ROI
+  (3)经过ROI-Pooling 每个ROI都被调整到固定尺寸
+  (4)获取每个调整后ROI的特征 -> 分类 + 回归
+  ===
+  (1)ROI Pooling的输入: 刚经过CNN的特征图 + ROIs(形状为1*5*1*1 4个坐标和1个索引)
+  (2)ROI Pooling的输出: 输出是batch个vector
+     batch的值等于RoI的个数 vector的大小为channel * w * h
+	 RoI Pooling将矩形框都映射成大小固定w * h的矩形框
+  具体的2步:
+  (1)先把原图中候选框的坐标映射到刚经过CNN的feature map上
+     规则就是把各个坐标除以: 输入图片与feature map的大小之比
+  (2)Pooling的过程中要计算Pooling后的结果(也就是每一个像素)往回对应到feature map上所占的矩形范围
+     然后在这个范围中取max或者取average
+  --具体过程见pooling/ROIPooling.c的代码和注释
+2.ROI-Align:
+  ROI-Pooling使用了stride间隔的取整,
+  使得特征图ROI再映射回原图ROI的时候有stride的误差
+  经过max-pooling后的特征与原ROI之间的空间不对齐
+  ===
+  修改: 从原图到特征图的ROI映射直接用双线性插值而不取整
+  取其周围最近的4个点 在Y方向内插两次 再在X方向内插一次 得到新值
+  ROI的形状不变化(但是ROI-Warping会改变形状)
+  ===
+  (1)由ROI-Pooling -> ROI-Align的过程见博客:
+     http://blog.leanote.com/post/afanti.deng@gmail.com/b5f4f526490b
+  (2)双线性插值见博客:
+     https://blog.csdn.net/xbinworld/article/details/65660665
+3.ROI-Warping:
+  pooling层前面添加一层 将特征图crop一块 然后warp到固定尺寸
+  这里的warp采用长度和宽度2个方向的双线性插值
+=====

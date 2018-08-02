@@ -34,7 +34,7 @@
   在卷积层和全连接层之间加入了SPP layer
   2点改进:
   (1)SPP layer中每个pooling的filter会根据输入调整大小 输出尺度始终是固定的
-     R-CNN中，每个候选框统一大小后分别在CNN中计算
+     R-CNN中 每个候选框统一大小后分别在CNN中计算
   (2)SPP Net只对原图进行一次卷积得到整张图的feature map
      然后找到每个候选框在feature map上的映射patch
      将此patch作为每个候选框的特征输入到SPP layer和之后的层
