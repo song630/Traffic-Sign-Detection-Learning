@@ -1,0 +1,41 @@
+Deep detection network for real-life traffic sign in vehicular networks
+1.摘要: 2阶段coarse-to-fine
+  (1)先用AN(利用传统计算机视觉方法颜色特征)和Faster-RCNN找出ROI以及粗略分3类
+  (2)AN输出的ROI给FRPN筛选 FRPN精确产生region proposals
+2.其它更改:
+  (1)加了一个反卷积层
+  (2)将原来的分类器替换为3个softmax
+3.加速的重要原因:
+  (1) --和Faster-RCNN比产生了更少的anchors
+  (2) --AN并行地放在CNN旁边
+4.提升performance的重要原因:
+  --用反卷积层针对很小的目标检测
+5.架构分为4个模块: CNN, AN, FRPN, Fast-RCNN
+6.AN: 将图片转为HSV之后再用color-based-segmentation(经验阈值)产生mask
+7.FRPN:
+  2个输入
+  将convolutional feature map和attention map建立映射
+  输出proposals和分类得分
+  使用2个FCN
+  定义loss function
+8.预处理: 图片裁剪为2048*1648 resize为1024*800
+--original-anchors数量非常少
+==============================
+A Hierarchical Deep Architecture and Mini-Batch Selection Method for Joint Traffic Sign and Light Detection
+1.摘要:
+  同时检测灯和信号牌 数据集也有overlap
+  使用了多层级架构和mini-batch proposal selection机制
+2.两个问题:
+  (1)combination of datasets
+     先判定global class再是subclass 并行的多层次分类器
+	 新定义一个适用于多层次结构的loss function
+  (2)overlapping
+     使用background threshold(0.01)
+	 negative proposal的IoU定为0.01-0.3之间
+3.accuracy, recall显著低于其它
+--问题: 是如何提速的?
+==============================
+提速思路:
+1.裁剪图片的下面部分
+2.减少最开始产生的anchors
+3.并行结构
