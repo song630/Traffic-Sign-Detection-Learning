@@ -229,6 +229,11 @@ def label_accuracy_score(label_trues, label_preds, n_class):
 	return temp_acc, temp_acc_cls, temp_mean_iu, temp_fwavacc
 
 
+def adjust_learning_rate(optimizer, new_lr)
+	for param_group in optimizer.param_groups:
+		param_group['lr'] = new_lr
+
+
 if __name__ == '__main__':
 	args = parse_args()
 	print('Called with args:')
@@ -251,13 +256,27 @@ if __name__ == '__main__':
 	model = MyFCN(n_classes, imported_model)
 	criterion = nn.NLLLoss2d()
 	optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, weight_decay=1e-4)
+	# after every 'step_size' epoches, lr = lr * gamma
 	scheduler = torch.optim.scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
 	if args.cuda:
 		model.cuda()
 	else:
 		raise Exception('Should use cuda here.')
 
-	for epoch in range(args.max_epochs):
+	start_epoch = 0
+
+	if args.resume: # load state of last time:
+		load_name = args.save_dir + 'fcn_{}.pth'.format(args.checkepoch)
+		print("loading checkpoint %s" % (load_name))
+		checkpoint = torch.load(load_name)
+		start_epoch = checkpoint['epoch']
+		model.load_state_dict(checkpoint['model'])
+		optimizer.load_state_dict(checkpoint['optimizer'])
+		# load lr of last time:
+		adjust_learning_rate(optimizer, optimizer.param_groups[0]['lr'])
+		print("loaded checkpoint %s" % (load_name))
+
+	for epoch in range(start_epoch, args.max_epochs):
 		train_loss, train_acc, train_acc_cls, train_mean_iu, train_fwavacc = 0, 0, 0, 0, 0
 		start = time.time()
 		# always add model.train() before training, add model.eval() before test
@@ -323,3 +342,12 @@ if __name__ == '__main__':
 			eval_acc / len(datasets[1]),
 			eval_mean_iu / len(datasets[1]),
 			end - start))
+		# save state:
+		save_name = args.save_dir + 'fcn_{}.pth'.format(epoch)
+		torch.save({
+			'epoch': epoch + 1,
+			'model': model.module.state_dict(),
+			'optimizer': optimizer.state_dict()},
+			save_name
+		)
+		print('save model: {}'.format(save_name))
