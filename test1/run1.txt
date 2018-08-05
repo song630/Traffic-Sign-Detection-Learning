@@ -1,0 +1,105 @@
+$ CUDA_VISIBLE_DEVICES=2 python main.py --cuda --epochs 80 --bs 40
+Called with args:
+Namespace(batch_size=40, checkepoch=1, cuda=True, height=320, lr=0.01, max_epochs=80, num_workers=0, resume=False, save_dir='/home/storage3/traffic-sign/test1/load/', width=480)
+Dataset imported successfully.
+Dataset imported successfully.
+main.py:263: RuntimeWarning: invalid value encountered in true_divide
+  temp_acc_cls = np.diag(hist) / hist.sum(axis=1)
+main.py:265: RuntimeWarning: invalid value encountered in true_divide
+  iu = np.diag(hist) / (hist.sum(axis=1) + hist.sum(axis=0) - np.diag(hist))
+After epoch 1/80,                       train loss: 2.27291, train acc: 0.53609, train mean iu: 0.12069, valid loss: 1.80596, valid acc: 0.72492, valid mean iu: 0.16844, time: 6.81
+After epoch 2/80,                       train loss: 1.51718, train acc: 0.73187, train mean iu: 0.23731, valid loss: 1.54841, valid acc: 0.72843, valid mean iu: 0.23798, time: 5.81
+After epoch 3/80,                       train loss: 1.31134, train acc: 0.73483, train mean iu: 0.25474, valid loss: 1.39104, valid acc: 0.73280, valid mean iu: 0.24995, time: 5.77
+After epoch 4/80,                       train loss: 1.16226, train acc: 0.74297, train mean iu: 0.26324, valid loss: 1.31172, valid acc: 0.73165, valid mean iu: 0.23556, time: 5.86
+After epoch 5/80,                       train loss: 1.06599, train acc: 0.75125, train mean iu: 0.26381, valid loss: 1.20807, valid acc: 0.74347, valid mean iu: 0.25156, time: 5.81
+epoch 5 saved
+After epoch 6/80,                       train loss: 0.98972, train acc: 0.75982, train mean iu: 0.28171, valid loss: 1.14985, valid acc: 0.74637, valid mean iu: 0.25054, time: 5.86
+After epoch 7/80,                       train loss: 0.92326, train acc: 0.76845, train mean iu: 0.28257, valid loss: 1.09702, valid acc: 0.75181, valid mean iu: 0.25600, time: 5.86
+After epoch 8/80,                       train loss: 0.86063, train acc: 0.78004, train mean iu: 0.29312, valid loss: 1.05755, valid acc: 0.75435, valid mean iu: 0.26836, time: 5.96
+After epoch 9/80,                       train loss: 0.81117, train acc: 0.78525, train mean iu: 0.30328, valid loss: 1.02505, valid acc: 0.75832, valid mean iu: 0.27458, time: 5.86
+After epoch 10/80,                      train loss: 0.76793, train acc: 0.79890, train mean iu: 0.32395, valid loss: 0.98337, valid acc: 0.76417, valid mean iu: 0.27396, time: 5.98
+epoch 10 saved
+After epoch 11/80,                      train loss: 0.72092, train acc: 0.80939, train mean iu: 0.33893, valid loss: 0.95406, valid acc: 0.76776, valid mean iu: 0.29258, time: 5.96
+After epoch 12/80,                      train loss: 0.68314, train acc: 0.81862, train mean iu: 0.35419, valid loss: 0.93427, valid acc: 0.77159, valid mean iu: 0.28179, time: 6.06
+After epoch 13/80,                      train loss: 0.65724, train acc: 0.82728, train mean iu: 0.36208, valid loss: 0.90950, valid acc: 0.77564, valid mean iu: 0.30179, time: 5.93
+After epoch 14/80,                      train loss: 0.62353, train acc: 0.83389, train mean iu: 0.38282, valid loss: 0.89392, valid acc: 0.77680, valid mean iu: 0.30752, time: 5.99
+After epoch 15/80,                      train loss: 0.60969, train acc: 0.83711, train mean iu: 0.40251, valid loss: 0.87973, valid acc: 0.77958, valid mean iu: 0.29993, time: 5.99
+epoch 15 saved
+After epoch 16/80,                      train loss: 0.57780, train acc: 0.84682, train mean iu: 0.41579, valid loss: 0.85437, valid acc: 0.78472, valid mean iu: 0.29931, time: 6.00
+After epoch 17/80,                      train loss: 0.55426, train acc: 0.85184, train mean iu: 0.42131, valid loss: 0.84011, valid acc: 0.78743, valid mean iu: 0.31904, time: 5.83
+After epoch 18/80,                      train loss: 0.52913, train acc: 0.85771, train mean iu: 0.44336, valid loss: 0.82767, valid acc: 0.78843, valid mean iu: 0.32701, time: 6.04
+After epoch 19/80,                      train loss: 0.51916, train acc: 0.86028, train mean iu: 0.43570, valid loss: 0.81661, valid acc: 0.79048, valid mean iu: 0.33211, time: 5.82
+After epoch 20/80,                      train loss: 0.49694, train acc: 0.86397, train mean iu: 0.46340, valid loss: 0.79780, valid acc: 0.79254, valid mean iu: 0.33365, time: 5.95
+epoch 20 saved
+After epoch 21/80,                      train loss: 0.49124, train acc: 0.86813, train mean iu: 0.47916, valid loss: 0.79345, valid acc: 0.79516, valid mean iu: 0.34084, time: 5.85
+After epoch 22/80,                      train loss: 0.47359, train acc: 0.87049, train mean iu: 0.47333, valid loss: 0.78702, valid acc: 0.79591, valid mean iu: 0.34114, time: 5.92
+After epoch 23/80,                      train loss: 0.47239, train acc: 0.86814, train mean iu: 0.48247, valid loss: 0.77101, valid acc: 0.80011, valid mean iu: 0.34999, time: 6.00
+After epoch 24/80,                      train loss: 0.44091, train acc: 0.88076, train mean iu: 0.49513, valid loss: 0.77723, valid acc: 0.79721, valid mean iu: 0.34896, time: 5.78
+After epoch 25/80,                      train loss: 0.45077, train acc: 0.87299, train mean iu: 0.50122, valid loss: 0.75440, valid acc: 0.80350, valid mean iu: 0.33736, time: 5.94
+epoch 25 saved
+After epoch 26/80,                      train loss: 0.42926, train acc: 0.88548, train mean iu: 0.51937, valid loss: 0.74887, valid acc: 0.80454, valid mean iu: 0.34381, time: 5.86
+After epoch 27/80,                      train loss: 0.41111, train acc: 0.88748, train mean iu: 0.51681, valid loss: 0.75634, valid acc: 0.80013, valid mean iu: 0.35882, time: 5.78
+After epoch 28/80,                      train loss: 0.40283, train acc: 0.88602, train mean iu: 0.53731, valid loss: 0.74675, valid acc: 0.80284, valid mean iu: 0.36088, time: 5.74
+After epoch 29/80,                      train loss: 0.39564, train acc: 0.88900, train mean iu: 0.53070, valid loss: 0.73327, valid acc: 0.80560, valid mean iu: 0.35923, time: 5.84
+After epoch 30/80,                      train loss: 0.37673, train acc: 0.89556, train mean iu: 0.55920, valid loss: 0.75084, valid acc: 0.80044, valid mean iu: 0.35838, time: 5.78
+epoch 30 saved
+After epoch 31/80,                      train loss: 0.37938, train acc: 0.89100, train mean iu: 0.55180, valid loss: 0.71977, valid acc: 0.81014, valid mean iu: 0.36653, time: 5.80
+After epoch 32/80,                      train loss: 0.36879, train acc: 0.89570, train mean iu: 0.55389, valid loss: 0.70731, valid acc: 0.81046, valid mean iu: 0.36831, time: 5.78
+After epoch 33/80,                      train loss: 0.36125, train acc: 0.89743, train mean iu: 0.56161, valid loss: 0.72019, valid acc: 0.80597, valid mean iu: 0.36302, time: 5.95
+After epoch 34/80,                      train loss: 0.35702, train acc: 0.89937, train mean iu: 0.56954, valid loss: 0.73092, valid acc: 0.80417, valid mean iu: 0.37316, time: 6.03
+After epoch 35/80,                      train loss: 0.35706, train acc: 0.89743, train mean iu: 0.56783, valid loss: 0.71030, valid acc: 0.81125, valid mean iu: 0.37285, time: 6.10
+epoch 35 saved
+After epoch 36/80,                      train loss: 0.34584, train acc: 0.90195, train mean iu: 0.56432, valid loss: 0.70952, valid acc: 0.80983, valid mean iu: 0.37309, time: 5.82
+After epoch 37/80,                      train loss: 0.33528, train acc: 0.90317, train mean iu: 0.57267, valid loss: 0.70906, valid acc: 0.80928, valid mean iu: 0.38727, time: 5.76
+After epoch 38/80,                      train loss: 0.33847, train acc: 0.90189, train mean iu: 0.57444, valid loss: 0.69911, valid acc: 0.81305, valid mean iu: 0.38555, time: 5.97
+After epoch 39/80,                      train loss: 0.33265, train acc: 0.90378, train mean iu: 0.58394, valid loss: 0.69181, valid acc: 0.81532, valid mean iu: 0.37070, time: 5.81
+After epoch 40/80,                      train loss: 0.32220, train acc: 0.90532, train mean iu: 0.58744, valid loss: 0.70120, valid acc: 0.81070, valid mean iu: 0.38694, time: 5.91
+epoch 40 saved
+After epoch 41/80,                      train loss: 0.32136, train acc: 0.90667, train mean iu: 0.59580, valid loss: 0.70716, valid acc: 0.80930, valid mean iu: 0.38431, time: 5.97
+After epoch 42/80,                      train loss: 0.31380, train acc: 0.90846, train mean iu: 0.60046, valid loss: 0.69844, valid acc: 0.81261, valid mean iu: 0.39151, time: 5.80
+After epoch 43/80,                      train loss: 0.30984, train acc: 0.90831, train mean iu: 0.60021, valid loss: 0.69784, valid acc: 0.81343, valid mean iu: 0.39144, time: 6.02
+After epoch 44/80,                      train loss: 0.31436, train acc: 0.90699, train mean iu: 0.60192, valid loss: 0.68773, valid acc: 0.81396, valid mean iu: 0.38905, time: 5.86
+After epoch 45/80,                      train loss: 0.30200, train acc: 0.91100, train mean iu: 0.60190, valid loss: 0.68899, valid acc: 0.81366, valid mean iu: 0.38768, time: 5.95
+epoch 45 saved
+After epoch 46/80,                      train loss: 0.29626, train acc: 0.91256, train mean iu: 0.61968, valid loss: 0.68497, valid acc: 0.81378, valid mean iu: 0.38771, time: 5.84
+After epoch 47/80,                      train loss: 0.29832, train acc: 0.91019, train mean iu: 0.61723, valid loss: 0.67869, valid acc: 0.81639, valid mean iu: 0.39235, time: 5.74
+After epoch 48/80,                      train loss: 0.28830, train acc: 0.91465, train mean iu: 0.62098, valid loss: 0.69841, valid acc: 0.81094, valid mean iu: 0.38687, time: 5.90
+After epoch 49/80,                      train loss: 0.28900, train acc: 0.91340, train mean iu: 0.61548, valid loss: 0.68218, valid acc: 0.81371, valid mean iu: 0.38997, time: 6.01
+After epoch 50/80,                      train loss: 0.28155, train acc: 0.91443, train mean iu: 0.63226, valid loss: 0.67452, valid acc: 0.81644, valid mean iu: 0.38754, time: 5.79
+epoch 50 saved
+After epoch 51/80,                      train loss: 0.28384, train acc: 0.91499, train mean iu: 0.62238, valid loss: 0.68739, valid acc: 0.81494, valid mean iu: 0.39387, time: 5.98
+After epoch 52/80,                      train loss: 0.27906, train acc: 0.91608, train mean iu: 0.62962, valid loss: 0.67223, valid acc: 0.81620, valid mean iu: 0.38993, time: 6.02
+After epoch 53/80,                      train loss: 0.28951, train acc: 0.91292, train mean iu: 0.62301, valid loss: 0.66827, valid acc: 0.81705, valid mean iu: 0.39428, time: 5.83
+After epoch 54/80,                      train loss: 0.27681, train acc: 0.91675, train mean iu: 0.62496, valid loss: 0.69180, valid acc: 0.81237, valid mean iu: 0.38935, time: 5.80
+After epoch 55/80,                      train loss: 0.27868, train acc: 0.91456, train mean iu: 0.63161, valid loss: 0.70045, valid acc: 0.81208, valid mean iu: 0.39707, time: 5.97
+epoch 55 saved
+After epoch 56/80,                      train loss: 0.27424, train acc: 0.91551, train mean iu: 0.63636, valid loss: 0.65740, valid acc: 0.81863, valid mean iu: 0.39868, time: 6.07
+After epoch 57/80,                      train loss: 0.26543, train acc: 0.91958, train mean iu: 0.64423, valid loss: 0.66478, valid acc: 0.81639, valid mean iu: 0.39264, time: 5.79
+After epoch 58/80,                      train loss: 0.25965, train acc: 0.92011, train mean iu: 0.63490, valid loss: 0.66607, valid acc: 0.81714, valid mean iu: 0.39445, time: 5.85
+After epoch 59/80,                      train loss: 0.25742, train acc: 0.92152, train mean iu: 0.64306, valid loss: 0.67142, valid acc: 0.81667, valid mean iu: 0.39034, time: 5.98
+After epoch 60/80,                      train loss: 0.25667, train acc: 0.92134, train mean iu: 0.63685, valid loss: 0.67611, valid acc: 0.81489, valid mean iu: 0.40393, time: 5.84
+epoch 60 saved
+After epoch 61/80,                      train loss: 0.25847, train acc: 0.91955, train mean iu: 0.64111, valid loss: 0.67175, valid acc: 0.81825, valid mean iu: 0.40162, time: 6.00
+After epoch 62/80,                      train loss: 0.26010, train acc: 0.92073, train mean iu: 0.64937, valid loss: 0.66018, valid acc: 0.82065, valid mean iu: 0.39337, time: 5.79
+After epoch 63/80,                      train loss: 0.26047, train acc: 0.92042, train mean iu: 0.64913, valid loss: 0.65171, valid acc: 0.82057, valid mean iu: 0.39494, time: 5.90
+After epoch 64/80,                      train loss: 0.25243, train acc: 0.92317, train mean iu: 0.64341, valid loss: 0.65846, valid acc: 0.81881, valid mean iu: 0.41087, time: 5.89
+After epoch 65/80,                      train loss: 0.24888, train acc: 0.92320, train mean iu: 0.65849, valid loss: 0.68345, valid acc: 0.81438, valid mean iu: 0.40674, time: 5.87
+epoch 65 saved
+After epoch 66/80,                      train loss: 0.25679, train acc: 0.92018, train mean iu: 0.64602, valid loss: 0.64945, valid acc: 0.82189, valid mean iu: 0.39556, time: 5.81
+After epoch 67/80,                      train loss: 0.24947, train acc: 0.92301, train mean iu: 0.64983, valid loss: 0.65152, valid acc: 0.82079, valid mean iu: 0.39901, time: 5.84
+After epoch 68/80,                      train loss: 0.24445, train acc: 0.92377, train mean iu: 0.64746, valid loss: 0.64976, valid acc: 0.82138, valid mean iu: 0.39501, time: 5.94
+After epoch 69/80,                      train loss: 0.23819, train acc: 0.92696, train mean iu: 0.66244, valid loss: 0.67143, valid acc: 0.81734, valid mean iu: 0.39792, time: 6.05
+After epoch 70/80,                      train loss: 0.24360, train acc: 0.92311, train mean iu: 0.66147, valid loss: 0.67504, valid acc: 0.81789, valid mean iu: 0.39416, time: 5.94
+epoch 70 saved
+After epoch 71/80,                      train loss: 0.23370, train acc: 0.92599, train mean iu: 0.65709, valid loss: 0.65672, valid acc: 0.82064, valid mean iu: 0.40887, time: 5.74
+After epoch 72/80,                      train loss: 0.24019, train acc: 0.92406, train mean iu: 0.66322, valid loss: 0.64822, valid acc: 0.82186, valid mean iu: 0.40196, time: 5.99
+After epoch 73/80,                      train loss: 0.23758, train acc: 0.92651, train mean iu: 0.66211, valid loss: 0.64848, valid acc: 0.82012, valid mean iu: 0.40158, time: 5.84
+After epoch 74/80,                      train loss: 0.23455, train acc: 0.92649, train mean iu: 0.66814, valid loss: 0.64234, valid acc: 0.82143, valid mean iu: 0.40796, time: 5.85
+After epoch 75/80,                      train loss: 0.23857, train acc: 0.92671, train mean iu: 0.66179, valid loss: 0.65774, valid acc: 0.81926, valid mean iu: 0.40389, time: 5.80
+epoch 75 saved
+After epoch 76/80,                      train loss: 0.23676, train acc: 0.92615, train mean iu: 0.66852, valid loss: 0.64391, valid acc: 0.82147, valid mean iu: 0.39986, time: 5.93
+After epoch 77/80,                      train loss: 0.23258, train acc: 0.92658, train mean iu: 0.67191, valid loss: 0.65828, valid acc: 0.82000, valid mean iu: 0.40823, time: 6.02
+After epoch 78/80,                      train loss: 0.23887, train acc: 0.92271, train mean iu: 0.65456, valid loss: 0.65698, valid acc: 0.81912, valid mean iu: 0.40648, time: 5.85
+After epoch 79/80,                      train loss: 0.22477, train acc: 0.92866, train mean iu: 0.68515, valid loss: 0.65454, valid acc: 0.82000, valid mean iu: 0.40108, time: 6.02
+After epoch 80/80,                      train loss: 0.22712, train acc: 0.92874, train mean iu: 0.67456, valid loss: 0.65459, valid acc: 0.82021, valid mean iu: 0.41023, time: 5.80
+epoch 80 saved

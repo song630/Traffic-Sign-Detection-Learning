@@ -66,6 +66,36 @@ def get_images(root=dataset_dir, train=True):
 	return images, labels
 
 
+class RandomCrop:
+	def __init__(self, output_size):
+		"""
+		output_size: width first, then height.
+		"""
+		assert isinstance(output_size, (int, tuple))
+		if isinstance(output_size, int):
+			self.output_size = (output_size, output_size)
+		else:
+			assert len(output_size) == 2
+			self.output_size = output_size
+
+
+	def __call__(self, sample_img, sample_lbl):
+		"""
+		sample_img, sample_lbl: PIL.Image objects,
+		should be cropped in the same way
+		"""
+		w, h = sample_img.size
+		new_w, new_h = self.output_size
+		if new_h >= h or new_w >= w:
+			raise Exception('Invalid crop outputs.')
+		top = np.random.randint(0, h - new_h)
+		left = np.random.randint(0, w - new_w)
+		sample_img = sample_img.crop((left, top, left + new_w, top + new_h))
+		sample_lbl = sample_lbl.crop((left, top, left + new_w, top + new_h))
+		# print('crop result:', sample_img.size, sample_lbl.size)
+		return sample_img, sample_lbl
+
+
 def random_crop(the_image, the_label, width, height):  # preprocess
 	"""
 	image, label: PIL.Image objects
@@ -89,21 +119,24 @@ class_colors = [[0, 0, 0], [128, 0, 0], [0, 128, 0], [128, 128, 0], [0, 0, 128],
 				[64, 128, 128], [192, 128, 128], [0, 64, 0], [128, 64, 0],
 				[0, 192, 0], [128, 192, 0], [0, 64, 128]]
 
-color_map = np.zeros(255 ** 3)
+color_map = np.zeros(256 ** 3)
 for i, j in enumerate(class_colors):
-	color_map[j[0] * 255 * 255 + j[1] * 255 + j[2]] = i  # 0-20
+	color_map[j[0] * 256 * 256 + j[1] * 256 + j[2]] = i  # 0-20
 
 
 def image2label(_image):  # image: PIL.Image object
 	temp = np.array(_image, dtype='int32')  # int32: RGB
-	index = temp[0] * 255 * 255 + temp[1] * 255 + temp[2]
+	index = temp[:, :, 0] * 256 * 256 + temp[:, :, 1] * 256 + temp[:, :, 2]
 	return np.array(color_map[index], dtype='int64')  # int64: after computing *255*255
 
 
 def transform(_image, _label, crop_sizes):
 	# image, label: PIL.Image objects
 	# first crop:
-	_image, _label = random_crop(_image, _label, crop_sizes[0], crop_sizes[1])
+	# _image, _label = random_crop(_image, _label, crop_sizes[0], crop_sizes[1])
+	# RandomCrop: a callable class
+	rc = RandomCrop((crop_sizes[0], crop_sizes[1]))
+	_image, _label = rc(_image, _label)
 	# then use tf.Compose:
 	preprocess = tf.Compose([
 		tf.ToTensor(),
@@ -205,7 +238,7 @@ class MyFCN(nn.Module):
 		# 2.then add to output of stage2, deconv(it doubles)
 		# 3.add to output of stage1, deconv(it doubles)
 		return self.deconv8(self.conv3(s1_out) + self.deconv4(self.conv2(s2_out)
-															  + self.deconv2(self.conv1(s3_out))))
+			+ self.deconv2(self.conv1(s3_out))))
 
 
 def fast_hist(true_label, pred_label, n_class):
@@ -295,6 +328,7 @@ if __name__ == '__main__':
 			# forward:
 			outputs = model(inputs)
 			# log_softmax: output a probability distribution
+			# after softmax: batch * n_classes * height * width
 			outputs = torch.nn.functional.log_softmax(outputs, dim=1)  # predict (21 classes)
 			loss = criterion(outputs, targets)
 			# backward:
@@ -305,10 +339,10 @@ if __name__ == '__main__':
 			train_loss += loss.data[0]
 			# decide the class by selecting the maximum from the distribution
 			# code from Internet:
-			label_pred = out.max(dim=1)[1].data.cpu().numpy()
-			label_true = label.data.cpu().numpy()
+			label_pred = outputs.max(dim=1)[1].data.cpu().numpy()
+			label_true = targets.data.cpu().numpy()
 			for lbt, lbp in zip(label_true, label_pred):
-				acc, acc_cls, mean_iu, fwavacc = label_accuracy_score(lbt, lbp, num_classes)
+				acc, acc_cls, mean_iu, fwavacc = label_accuracy_score(lbt, lbp, n_classes)
 				train_acc += acc
 				train_acc_cls += acc_cls
 				train_mean_iu += mean_iu
@@ -323,15 +357,15 @@ if __name__ == '__main__':
 			outputs = torch.nn.functional.log_softmax(outputs, dim=1)
 			loss = criterion(outputs, targets)
 			# backward:
-			optimizer.zero_grad()
-			loss.backward()
-			optimizer.step()
+			# optimizer.zero_grad()
+			# loss.backward()
+			# optimizer.step()
 			eval_loss += loss.data[0]
 
-			label_pred = out.max(dim=1)[1].data.cpu().numpy()
+			label_pred = outputs.max(dim=1)[1].data.cpu().numpy()
 			label_true = targets.data.cpu().numpy()
 			for lbt, lbp in zip(label_true, label_pred):
-				acc, acc_cls, mean_iu, fwavacc = label_accuracy_score(lbt, lbp, num_classes)
+				acc, acc_cls, mean_iu, fwavacc = label_accuracy_score(lbt, lbp, n_classes)
 				eval_acc += acc
 				eval_acc_cls += acc_cls
 				eval_mean_iu += mean_iu
@@ -341,7 +375,7 @@ if __name__ == '__main__':
 		print('After epoch {}/{}, \
 			train loss: {:.5f}, train acc: {:.5f}, train mean iu: {:.5f}, \
 			valid loss: {:.5f}, valid acc: {:.5f}, valid mean iu: {:.5f}, time: {:.2f}'.format(
-			epoch, args.epoch,
+			epoch + 1, args.max_epochs,
 			train_loss / len(dataloaders[0]),
 			train_acc / len(datasets[0]),
 			train_mean_iu / len(datasets[0]),
@@ -350,11 +384,12 @@ if __name__ == '__main__':
 			eval_mean_iu / len(datasets[1]),
 			end - start))
 		# save state:
-		save_name = args.save_dir + 'fcn_{}.pth'.format(epoch)
-		torch.save({
-			'epoch': epoch + 1,
-			'model': model.module.state_dict(),
-			'optimizer': optimizer.state_dict()},
-			save_name
-		)
-		print('save model: {}'.format(save_name))
+		if (epoch + 1) % 5 == 0:
+			save_name = args.save_dir + 'fcn_{}.pth'.format(epoch)
+			torch.save({
+				'epoch': epoch + 1,
+				'model': model.state_dict(),
+				'optimizer': optimizer.state_dict()},
+				save_name
+			)
+			print('epoch {} saved'.format(epoch + 1))

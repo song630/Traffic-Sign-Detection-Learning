@@ -1,0 +1,15 @@
+run1运行情况总结
+1.内存占用过多(10G)
+  直接运行Github上Faster-RCNN的代码内存只有4G左右(相同数据集)
+2.准确率: (80 epoches)
+  train mean iu: 0.67456, valid mean iu: 0.41023 (个人)
+  Train Mean IU: 0.64002, Valid Mean IU: 0.53311 (原博客)
+3.和源代码的主要区别:
+  (1)训练集的batch_size=32 源代码是64
+  (2)num_workers=0 源代码是4 (加载数据集时)
+  (3)用预训练的网络是torchvision.models中的 源代码是model_zoo中的
+  (4)原代码50个epoch后才调整lr 这里每5个epoch衰减1次
+4.运行时的2个bug:
+  (1)softmax后输出的outputs张量是batch_size * n_classes * height * width
+     targets也必须是相同维度
+  (2)验证阶段如果加上loss.backward()会因为前面Variable的volatile=True报错
