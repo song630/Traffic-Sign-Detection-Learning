@@ -11,7 +11,7 @@ import time, os, random, math, argparse
 import matplotlib.pyplot as plt
 from PIL import Image
 
-dataset_dir = '/home/storage3/traffic-sign/faster-rcnn.pytorch/data/VOCdevkit2007/VOC2007'
+dataset_dir = '/home/storage3/traffic-sign/faster-rcnn.pytorch/data/VOCdevkit2007/VOC2007/'
 
 
 def parse_args():
@@ -22,6 +22,12 @@ def parse_args():
 	parser.add_argument('--nw', dest='num_workers',
 						help='number of worker to load data', # ??
 						default=0, type=int)
+	parser.add_argument('--width', dest='width',
+						help='crop size',
+						default=480, type=int)
+	parser.add_argument('--height', dest='height',
+						help='crop size',
+						default=320, type=int)
 	parser.add_argument('--cuda', dest='cuda',
 						help='whether use CUDA',
 						action='store_true')
@@ -45,17 +51,16 @@ def parse_args():
 	parser.add_argument('--save_dir', dest='save_dir',
 						help='directory to save models', default="/home/storage3/traffic-sign/test1/load/",
 						type=str)
-	parser.add_argument()
 	return parser.parse_args()
 
 
 def get_images(root=dataset_dir, train=True):
-	file_name = root + 'Segmentation' + ('train.txt' if train else 'val.txt')
+	file_name = root + 'ImageSets/Segmentation/' + ('train.txt' if train else 'val.txt')
 	images, labels = [], []
 	with open(file_name) as f:
 		for line in f.read().split():
-			images.append(dataset_dir + 'JPEGImages' + line + '.jpg')
-			labels.append(dataset_dir + 'SegmentationClass' + line + '.png')
+			images.append(dataset_dir + 'JPEGImages/' + line + '.jpg')
+			labels.append(dataset_dir + 'SegmentationClass/' + line + '.png')
 	if len(images) != len(labels):
 		raise Exception('get_images(): Invalid input.')
 	return images, labels
@@ -67,7 +72,7 @@ def random_crop(the_image, the_label, width, height):  # preprocess
 	height, width: crop_sizes[0], [1]
 	crop image and label together syntheticly
 	"""
-	the_image, rect = tf.RandomCrop((width, height))(the_image)
+	the_image, rect = tf.RandomCrop((height, width))(the_image)
 	the_label = tf.FixedCrop(*rect)(the_label)
 	return the_image, the_label
 
@@ -107,6 +112,7 @@ def transform(_image, _label, crop_sizes):
 	])
 	_image = preprocess(_image)
 	_label = image2label(_label)
+	_label = torch.from_numpy(_label)
 	return _image, _label
 
 
@@ -114,6 +120,7 @@ class VOCDataset(Dataset):
 	# must redefine the 3 functions below:
 	def __init__(self, crop_sizes, train=True, trans=None, root=dataset_dir):
 		images, labels = get_images(root, train)
+		self.crop_sizes = crop_sizes
 		self.imgs, self.lbls = [], []
 		# Image.size: width, height
 		for k in range(len(images)):
@@ -229,7 +236,7 @@ def label_accuracy_score(label_trues, label_preds, n_class):
 	return temp_acc, temp_acc_cls, temp_mean_iu, temp_fwavacc
 
 
-def adjust_learning_rate(optimizer, new_lr)
+def adjust_learning_rate(optimizer, new_lr):
 	for param_group in optimizer.param_groups:
 		param_group['lr'] = new_lr
 
@@ -245,9 +252,9 @@ if __name__ == '__main__':
 				VOCDataset(input_size, False, transform, dataset_dir)]
 	# improve: change batch_sizes to 64, 128, respectively;
 	# also change num_workers.
-	dataloaders = [torch.utils.data.Dataloader(
+	dataloaders = [torch.utils.data.DataLoader(
 		datasets[0], batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory='True'),
-		torch.utils.data.Dataloader(
+		torch.utils.data.DataLoader(
 			datasets[1], batch_size=2*args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory='True')]
 
 	imported_model = models.resnet34(pretrained=True)
@@ -257,7 +264,7 @@ if __name__ == '__main__':
 	criterion = nn.NLLLoss2d()
 	optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, weight_decay=1e-4)
 	# after every 'step_size' epoches, lr = lr * gamma
-	scheduler = torch.optim.scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
+	scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
 	if args.cuda:
 		model.cuda()
 	else:
@@ -282,9 +289,9 @@ if __name__ == '__main__':
 		# always add model.train() before training, add model.eval() before test
 		# these 2 methods deal with the case where training/test are different.
 		model.train()
-		for image, label in dataloaders[0]:  # i: iteration
-			inputs = Variable(image.cuda())
-			targets = Variable(label.cuda())
+		for data in dataloaders[0]:  # i: iteration
+			inputs = Variable(data[0].cuda())
+			targets = Variable(data[1].cuda())
 			# forward:
 			outputs = model(inputs)
 			# log_softmax: output a probability distribution
@@ -308,9 +315,9 @@ if __name__ == '__main__':
 				train_fwavacc += fwavacc
 		model.eval()
 		eval_loss, eval_acc, eval_acc_cls, eval_mean_iu, eval_fwavacc = 0, 0, 0, 0, 0
-		for image, label in dataloaders[1]:  # i: iteration
-			inputs = Variable(image.cuda())
-			targets = Variable(label.cuda())
+		for data in dataloaders[1]:  # i: iteration
+			inputs = Variable(data[0].cuda(), volatile=True)
+			targets = Variable(data[1].cuda(), volatile=True)
 			# forward:
 			outputs = model(inputs)
 			outputs = torch.nn.functional.log_softmax(outputs, dim=1)
@@ -322,7 +329,7 @@ if __name__ == '__main__':
 			eval_loss += loss.data[0]
 
 			label_pred = out.max(dim=1)[1].data.cpu().numpy()
-			label_true = label.data.cpu().numpy()
+			label_true = targets.data.cpu().numpy()
 			for lbt, lbp in zip(label_true, label_pred):
 				acc, acc_cls, mean_iu, fwavacc = label_accuracy_score(lbt, lbp, num_classes)
 				eval_acc += acc
