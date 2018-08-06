@@ -5,4 +5,4 @@
 * Get familiar with the pipeline as well as some data structures in PyTorch
 * Referrence:
 
-[A Simple FCN Implementation](https://zhuanlan.zhihu.com/p/38236978)
+[Construct a Classification Model](https://zhuanlan.zhihu.com/p/38236978)
