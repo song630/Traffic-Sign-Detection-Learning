@@ -1,0 +1,6 @@
+用自己写的ResNet18替换SimpleNet
+运行显存: 3437M
+CUDA_VISIBLE_DEVICES=2 nohup python main2.py --cuda
+--net ResNet18 --epochs 35 > result.txt 2>&1 &
+其中2>&1表示将错误信息重定向到标准输出
+最后的&表示在后台运行

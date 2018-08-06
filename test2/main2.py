@@ -11,6 +11,10 @@ import time, os, random, math, argparse
 import matplotlib.pyplot as plt
 from PIL import Image
 
+import sys
+sys.path.append('/home/storage3/traffic-sign/test2/')
+from ResNet import ResNet18
+
 home_dir = '/home/storage3/traffic-sign/test2/'
 
 
@@ -35,6 +39,9 @@ def parse_args():
 	parser.add_argument('--decay', dest='decay_step',
 						help='decay step',
 						default=10, type=int)
+	parser.add_argument('--net', dest='net_type',
+						help='use SimpleNet or ResNet18',
+						default='SimpleNet', type=str)
 	"""
 	parser.add_argument('--mGPUs', dest='mGPUs', # === ?? try this later
 						help='whether use multiple GPUs',
@@ -190,7 +197,12 @@ if __name__ == '__main__':
 		shuffle=True, num_workers=args.num_workers)
 
 	num_classes = 10
-	net = SimpleNet(num_classes)
+	if args.net_type == 'SimpleNet':
+		net = SimpleNet(num_classes) # === try to replace it with ResNet-18
+	elif args.net_type == 'ResNet18':
+		net = ResNet18()
+	else:
+		raise Exception('Invalid input net type.')
 	criterion = nn.CrossEntropyLoss()
 	optimizer = torch.optim.Adam(net.parameters(), lr=args.lr, weight_decay=1e-4)
 	scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.decay_step, gamma=0.1)
