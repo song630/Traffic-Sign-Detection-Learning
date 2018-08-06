@@ -63,8 +63,27 @@ def parse_args():
 class NetUnit(nn.Module):
 	def __init__(self, in_channels, out_channels):
 		super(NetUnit, self).__init__()
+		# the standard size of kernel is 3
+		# padding=1: input & outputs have the same image size,
+		# the size only reduces in pooling layers.
 		self.conv = nn.Conv2d(in_channels=in_channels, out_channels=out_channels,
 			kernel_size=3, stride=1, padding=1)
+		"""
+		a normalization layer:
+		after every layer of computation, data distribution changes in unexpected way
+		(called Internal Covariate Shift),
+		which results in difficulties in next layer's study.
+		So after every layer, normalize data.
+		However, if they all follows standard Gaussian Distribution after every layer,
+		it's hard for the following layers to learn any features.
+		So some parameters should be reserved for study.
+		what BatchNorm layer does:
+		1.computes the mean value of the batch x;
+		2.computes stdev of the batch x;
+		3.normalize data x;
+		4.import 2 variables gamma, beta: y = gamma * x + beta.
+		"""
+		# w/o this layer, acc remains at 0.10
 		self.norm = nn.BatchNorm2d(num_features=out_channels)
 		self.relu = nn.ReLU()
 
@@ -76,10 +95,11 @@ class NetUnit(nn.Module):
 class SimpleNet(nn.Module):
 	def __init__(self, num_classes=10):
 		super(SimpleNet, self).__init__()
+		# 3: input has 3 channels(RGB)
 		self.unit1 = NetUnit(3, 32)
 		self.unit2 = NetUnit(32, 32)
 		self.unit3 = NetUnit(32, 32)
-		self.pool1 = nn.MaxPool2d(kernel_size=2)
+		self.pool1 = nn.MaxPool2d(kernel_size=2) # 2: every 4 pixels reduce to 1
 		self.unit4 = NetUnit(32, 64)
 		self.unit5 = NetUnit(64, 64)
 		self.unit6 = NetUnit(64, 64)
@@ -95,11 +115,17 @@ class SimpleNet(nn.Module):
 		self.unit14 = NetUnit(128, 128)
 		self.pool4 = nn.AvgPool2d(kernel_size=4)
 
+		# Sequential: add parameters to net in order
 		self.head_net = nn.Sequential(self.unit1, self.unit2, self.unit3, self.pool1, 
 			self.unit4, self.unit5, self.unit6, self.unit7, self.pool2, self.unit8,
 			self.unit9,self.unit10, self.unit11, self.pool3, self.unit12, self.unit13,
 			self.unit14, self.pool4)
-		# te full-connected layer at the end
+		# a full-connected layer at the end.
+		# after pool1, 32*32 -> 16*16;
+		# after pool2, 16*16 -> 8*8;
+		# after pool3, 8*8 -> 4*4;
+		# after pool4, 4*4 -> 1*1*128.
+		# make the output a flat vector, so that it can be sent to FC layer.
 		self.fc = nn.Linear(128, num_classes)
 
 
@@ -113,6 +139,7 @@ def TrainTransform(image, crop_size=32):
 		tf.RandomHorizontalFlip(),
 		tf.RandomCrop(crop_size, padding=4), # ??
 		tf.ToTensor(),
+		# make the values of all pixels between (-1, 1)
 		tf.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5)) # ??
 	])
 	return preprocess(image)
@@ -198,13 +225,14 @@ if __name__ == '__main__':
 				raise Exception('Should use cuda here.')
 			# forward
 			outputs = net(inputs)
-			loss = criterion(outputs, targets)
+			loss = criterion(outputs, targets) # compute loss
 			# backward
-			optimizer.zero_grad()
-			loss.backward()
+			optimizer.zero_grad() # clear grad
+			loss.backward() # propagate computed loss
 			optimizer.step()
 			train_loss += loss.cpu().data[0] * inputs.size(0)
 			_, prediction = torch.max(outputs.data, dim=1)
+			# get sum of the correct predictions within a batch
 			train_acc += torch.sum(prediction == targets.data)
 		# when finishing an epoch
 		train_loss /= train_total

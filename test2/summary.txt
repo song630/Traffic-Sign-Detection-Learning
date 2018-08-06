@@ -8,3 +8,18 @@ run1:
 3.运行结果:
   train_acc: 0.89, test_acc: 0.87
   (原文提到35个epoch后达到90%+准确率)
+
+run2:
+1.参数: 同上 但去掉了BatchNorm层
+2.运行情况: 时间为19s/epoch
+3.运行结果:
+  train_acc: 0.10, test_acc: 0.10 且每个epoch后都是这个数值
+
+run3:
+1.参数:
+  batch_size=15, epoch=40, decay_step=20, lr=1e-3
+2.运行情况:
+  内存占用不到700M
+  花费时间很长(38s/epoch)
+3.运行结果:
+  train_acc: 0.86, test_acc: 0.85
