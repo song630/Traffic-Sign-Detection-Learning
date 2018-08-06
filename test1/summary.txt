@@ -1,3 +1,5 @@
+--每次都是在前一次的基础上改动
+
 run1运行情况总结
 1.内存占用过多(10G)
   直接运行Github上Faster-RCNN的代码内存只有4G左右(相同数据集)
@@ -13,3 +15,39 @@ run1运行情况总结
   (1)softmax后输出的outputs张量是batch_size * n_classes * height * width
      targets也必须是相同维度
   (2)验证阶段如果加上loss.backward()会因为前面Variable的volatile=True报错
+
+====================
+
+run2运行情况总结
+1.batch_size比较大造成内存占用多
+  过度减少会导致无法收敛
+  batch_size=1时为在线学习 是标准的SGD
+  若数据量不大 noise数据存在时 模型容易被noise带偏
+  若数据量足够大 noise对模型几乎不影响
+2.准确率: (80 epoches)
+  train mean iu: 0.66806, valid mean iu: 0.40359
+3.更改:
+  batch_size=40
+  衰减的step改为30 epoches
+
+====================
+
+run3运行情况总结
+1.删除学习率的衰减
+2.准确率和上一次相近
+
+====================
+
+run4运行情况总结
+1.batch_size减小为10
+2.内存占用情况: 3G左右
+3.准确率: (valid iu在第10个epoch就达到了40%以上)
+  train mean iu: 0.73514, valid mean iu: 0.45160
+4.运行中 计算出的iu波动较大 较早就达到了比较高的水平
+
+====================
+
+run5运行情况总结
+1.学习率改为0.03 衰减的step改为35 batch_size仍为10
+2.准确率: (中间最高达到了46%)
+  train mean iu: 0.80128, valid mean iu: 0.44645

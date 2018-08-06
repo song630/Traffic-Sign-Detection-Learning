@@ -1,6 +1,6 @@
 $ CUDA_VISIBLE_DEVICES=2 python main.py --cuda --epochs 80 --bs 40
 Called with args:
-Namespace(batch_size=40, checkepoch=1, cuda=True, height=320, lr=0.01, max_epochs=80, num_workers=0, resume=False, save_dir='/home/storage3/traffic-sign/test1/load/', width=480)
+Namespace(batch_size=40, checkepoch=1, cuda=True, height=320, lr=0.01, max_epochs=80, num_workers=0, resume=False, save_dir='', width=480)
 Dataset imported successfully.
 Dataset imported successfully.
 main.py:263: RuntimeWarning: invalid value encountered in true_divide
