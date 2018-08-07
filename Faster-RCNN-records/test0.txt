@@ -1,21 +1,22 @@
-主要区别: 使用res101, epoch=10, batch_size=4, lr=0.004, lr_decay_step=8
+主要区别: 使用vgg16, epoch=20, batch_size=1, lr=0.001, lr_decay_step=5
 其它都是默认参数值
 
-$ CUDA_VISIBLE_DEVICES=2 python test_net.py --dataset pascal_voc --net res101
---checksession 1 --checkepoch 10 --checkpoint 2504 --cuda
+$ python test_net.py --dataset pascal_voc --net vgg16 --checksession 1
+--checkepoch 20 --checkpoint 10021 --cuda
 Called with args:
-Namespace(cfg_file='cfgs/vgg16.yml', checkepoch=10, checkpoint=2504, checksession=1,
+Namespace(cfg_file='cfgs/vgg16.yml', checkepoch=20, checkpoint=10021, checksession=1,
 class_agnostic=False, cuda=True, dataset='pascal_voc', large_scale=False,
-load_dir='', mGPUs=False, net='res101', parallel_type=0, set_cfgs=None, vis=False)
+load_dir='to_load/', mGPUs=False, net='vgg16', parallel_type=0, set_cfgs=None,
+vis=False)
 Using config:
 {'ANCHOR_RATIOS': [0.5, 1, 2],
  'ANCHOR_SCALES': [8, 16, 32],
  'CROP_RESIZE_WITH_MAX_POOL': False,
  'CUDA': False,
- 'DATA_DIR': '',
+ 'DATA_DIR': 'data',
  'DEDUP_BOXES': 0.0625,
  'EPS': 1e-14,
- 'EXP_DIR': 'res101',
+ 'EXP_DIR': 'vgg16',
  'FEAT_STRIDE': [16],
  'GPU_ID': 0,
  'MATLAB': 'matlab',
@@ -29,7 +30,7 @@ Using config:
  'POOLING_SIZE': 7,
  'RESNET': {'FIXED_BLOCKS': 1, 'MAX_POOL': False},
  'RNG_SEED': 3,
- 'ROOT_DIR': '',
+ 'ROOT_DIR': 'faster-rcnn.pytorch',
  'TEST': {'BBOX_REG': True,
           'HAS_RPN': True,
           'MAX_SIZE': 1000,
@@ -44,7 +45,7 @@ Using config:
           'SCALES': [600],
           'SVM': False},
  'TRAIN': {'ASPECT_GROUPING': False,
-           'BATCH_SIZE': 128,
+           'BATCH_SIZE': 256,
            'BBOX_INSIDE_WEIGHTS': [1.0, 1.0, 1.0, 1.0],
            'BBOX_NORMALIZE_MEANS': [0.0, 0.0, 0.0, 0.0],
            'BBOX_NORMALIZE_STDS': [0.1, 0.1, 0.2, 0.2],
@@ -56,14 +57,14 @@ Using config:
            'BG_THRESH_LO': 0.0,
            'BIAS_DECAY': False,
            'BN_TRAIN': False,
-           'DISPLAY': 20,
-           'DOUBLE_BIAS': False,
+           'DISPLAY': 10,
+           'DOUBLE_BIAS': True,
            'FG_FRACTION': 0.25,
            'FG_THRESH': 0.5,
            'GAMMA': 0.1,
            'HAS_RPN': True,
            'IMS_PER_BATCH': 1,
-           'LEARNING_RATE': 0.001,
+           'LEARNING_RATE': 0.01,
            'MAX_SIZE': 1000,
            'MOMENTUM': 0.9,
            'PROPOSAL_METHOD': 'gt',
@@ -90,7 +91,7 @@ Using config:
            'USE_ALL_GT': True,
            'USE_FLIPPED': True,
            'USE_GT': False,
-           'WEIGHT_DECAY': 0.0001},
+           'WEIGHT_DECAY': 0.0005},
  'USE_GPU_NMS': True}
 Loaded dataset `voc_2007_test` for training
 Set proposal method: gt
@@ -98,13 +99,13 @@ Preparing training data...
 voc_2007_test gt roidb loaded from voc_2007_test_gt_roidb.pkl
 done
 4952 roidb entries
-load checkpoint faster_rcnn_1_10_2504.pth
+load checkpoint faster_rcnn_1_20_10021.pth
 load model successfully!
-/rpn.py:90: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
+rpn.py:90: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
   rpn_cls_prob_reshape = F.softmax(rpn_cls_score_reshape)
 faster_rcnn.py:102: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
   cls_prob = F.softmax(cls_score)
-Evaluating detections0.065s 0.008s
+Evaluating detections0.044s 0.008s
 Writing aeroplane VOC results file
 Writing bicycle VOC results file
 Writing bird VOC results file
@@ -126,50 +127,101 @@ Writing sofa VOC results file
 Writing train VOC results file
 Writing tvmonitor VOC results file
 VOC07 metric? Yes
-AP for aeroplane = 0.7891
-AP for bicycle = 0.8409
-AP for bird = 0.7761
-AP for boat = 0.6531
-AP for bottle = 0.6197
-AP for bus = 0.8002
-AP for car = 0.8455
-AP for cat = 0.8629
-AP for chair = 0.5544
-AP for cow = 0.8453
-AP for diningtable = 0.6685
-AP for dog = 0.8504
-AP for horse = 0.8496
-AP for motorbike = 0.7896
-AP for person = 0.7886
-AP for pottedplant = 0.4782
-AP for sheep = 0.7659
-AP for sofa = 0.7669
-AP for train = 0.7864
-AP for tvmonitor = 0.7247
-Mean AP = 0.7528
+Reading annotation for 1/4952
+Reading annotation for 101/4952
+Reading annotation for 201/4952
+Reading annotation for 301/4952
+Reading annotation for 401/4952
+Reading annotation for 501/4952
+Reading annotation for 601/4952
+Reading annotation for 701/4952
+Reading annotation for 801/4952
+Reading annotation for 901/4952
+Reading annotation for 1001/4952
+Reading annotation for 1101/4952
+Reading annotation for 1201/4952
+Reading annotation for 1301/4952
+Reading annotation for 1401/4952
+Reading annotation for 1501/4952
+Reading annotation for 1601/4952
+Reading annotation for 1701/4952
+Reading annotation for 1801/4952
+Reading annotation for 1901/4952
+Reading annotation for 2001/4952
+Reading annotation for 2101/4952
+Reading annotation for 2201/4952
+Reading annotation for 2301/4952
+Reading annotation for 2401/4952
+Reading annotation for 2501/4952
+Reading annotation for 2601/4952
+Reading annotation for 2701/4952
+Reading annotation for 2801/4952
+Reading annotation for 2901/4952
+Reading annotation for 3001/4952
+Reading annotation for 3101/4952
+Reading annotation for 3201/4952
+Reading annotation for 3301/4952
+Reading annotation for 3401/4952
+Reading annotation for 3501/4952
+Reading annotation for 3601/4952
+Reading annotation for 3701/4952
+Reading annotation for 3801/4952
+Reading annotation for 3901/4952
+Reading annotation for 4001/4952
+Reading annotation for 4101/4952
+Reading annotation for 4201/4952
+Reading annotation for 4301/4952
+Reading annotation for 4401/4952
+Reading annotation for 4501/4952
+Reading annotation for 4601/4952
+Reading annotation for 4701/4952
+Reading annotation for 4801/4952
+Reading annotation for 4901/4952
+Saving cached annotations to test.txt_annots.pkl
+AP for aeroplane = 0.6783
+AP for bicycle = 0.7628
+AP for bird = 0.6541
+AP for boat = 0.5329
+AP for bottle = 0.5355
+AP for bus = 0.7587
+AP for car = 0.8521
+AP for cat = 0.8499
+AP for chair = 0.4663
+AP for cow = 0.7895
+AP for diningtable = 0.6033
+AP for dog = 0.7903
+AP for horse = 0.8317
+AP for motorbike = 0.7347
+AP for person = 0.7723
+AP for pottedplant = 0.4221
+AP for sheep = 0.7205
+AP for sofa = 0.6317
+AP for train = 0.7584
+AP for tvmonitor = 0.7125
+Mean AP = 0.6929
 ~~~~~~~~
 Results:
+0.678
+0.763
+0.654
+0.533
+0.535
+0.759
+0.852
+0.850
+0.466
 0.789
-0.841
-0.776
-0.653
-0.620
-0.800
-0.845
-0.863
-0.554
-0.845
-0.669
-0.850
-0.850
+0.603
 0.790
-0.789
-0.478
-0.766
-0.767
-0.786
-0.725
-0.753
+0.832
+0.735
+0.772
+0.422
+0.721
+0.632
+0.758
+0.713
+0.693
 ~~~~~~~~
 
 --------------------------------------------------------------
@@ -178,4 +230,4 @@ Results should be very close to the official MATLAB eval code.
 Recompute with `./tools/reval.py --matlab ...` for your paper.
 -- Thanks, The Management
 --------------------------------------------------------------
-test time: 441.6152s
+test time: 356.3285s

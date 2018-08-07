@@ -4,3 +4,79 @@ CUDA_VISIBLE_DEVICES=2 nohup python main2.py --cuda
 --net ResNet18 --epochs 35 > result.txt 2>&1 &
 其中2>&1表示将错误信息重定向到标准输出
 最后的&表示在后台运行
+
+nohup: 忽略输入
+Called with args:
+Namespace(batch_size=32, checkepoch=1, crop_size=32, cuda=True, decay_step=10,
+lr=0.001, max_epochs=35, net_type='ResNet18', num_workers=0, resume=False,
+save_dir='')
+after epoch 1/35, train_loss: 1.587, train_acc: 0.40, test_acc: 0.51, time: 81.81
+updated, epoch 1 saved
+after epoch 2/35, train_loss: 1.125, train_acc: 0.60, test_acc: 0.66, time: 84.88
+updated, epoch 2 saved
+after epoch 3/35, train_loss: 0.874, train_acc: 0.69, test_acc: 0.70, time: 85.74
+updated, epoch 3 saved
+after epoch 4/35, train_loss: 0.719, train_acc: 0.75, test_acc: 0.73, time: 86.20
+updated, epoch 4 saved
+after epoch 5/35, train_loss: 0.628, train_acc: 0.78, test_acc: 0.75, time: 85.39
+updated, epoch 5 saved
+after epoch 6/35, train_loss: 0.568, train_acc: 0.80, test_acc: 0.80, time: 86.09
+updated, epoch 6 saved
+after epoch 7/35, train_loss: 0.523, train_acc: 0.82, test_acc: 0.81, time: 85.80
+updated, epoch 7 saved
+after epoch 8/35, train_loss: 0.482, train_acc: 0.83, test_acc: 0.81, time: 85.92
+updated, epoch 8 saved
+after epoch 9/35, train_loss: 0.453, train_acc: 0.85, test_acc: 0.81, time: 85.86
+updated, epoch 9 saved
+after epoch 10/35, train_loss: 0.429, train_acc: 0.85, test_acc: 0.83, time: 86.06
+updated, epoch 10 saved
+after epoch 11/35, train_loss: 0.409, train_acc: 0.86, test_acc: 0.86, time: 85.50
+updated, epoch 11 saved
+after epoch 12/35, train_loss: 0.387, train_acc: 0.87, test_acc: 0.85, time: 85.60
+updated, epoch 12 saved
+after epoch 13/35, train_loss: 0.374, train_acc: 0.87, test_acc: 0.87, time: 85.27
+updated, epoch 13 saved
+after epoch 14/35, train_loss: 0.360, train_acc: 0.88, test_acc: 0.85, time: 85.58
+updated, epoch 14 saved
+after epoch 15/35, train_loss: 0.345, train_acc: 0.88, test_acc: 0.88, time: 85.14
+updated, epoch 15 saved
+after epoch 16/35, train_loss: 0.340, train_acc: 0.88, test_acc: 0.87, time: 84.82
+updated, epoch 16 saved
+after epoch 17/35, train_loss: 0.328, train_acc: 0.89, test_acc: 0.86, time: 84.58
+updated, epoch 17 saved
+after epoch 18/35, train_loss: 0.324, train_acc: 0.89, test_acc: 0.87, time: 86.00
+updated, epoch 18 saved
+after epoch 19/35, train_loss: 0.309, train_acc: 0.89, test_acc: 0.84, time: 84.52
+updated, epoch 19 saved
+after epoch 20/35, train_loss: 0.306, train_acc: 0.89, test_acc: 0.85, time: 86.95
+updated, epoch 20 saved
+after epoch 21/35, train_loss: 0.298, train_acc: 0.90, test_acc: 0.87, time: 85.24
+updated, epoch 21 saved
+after epoch 22/35, train_loss: 0.295, train_acc: 0.90, test_acc: 0.88, time: 84.63
+updated, epoch 22 saved
+after epoch 23/35, train_loss: 0.289, train_acc: 0.90, test_acc: 0.89, time: 84.80
+updated, epoch 23 saved
+after epoch 24/35, train_loss: 0.280, train_acc: 0.90, test_acc: 0.88, time: 85.54
+updated, epoch 24 saved
+after epoch 25/35, train_loss: 0.278, train_acc: 0.90, test_acc: 0.88, time: 85.51
+updated, epoch 25 saved
+after epoch 26/35, train_loss: 0.278, train_acc: 0.90, test_acc: 0.88, time: 85.62
+updated, epoch 26 saved
+after epoch 27/35, train_loss: 0.271, train_acc: 0.91, test_acc: 0.88, time: 84.79
+updated, epoch 27 saved
+after epoch 28/35, train_loss: 0.266, train_acc: 0.91, test_acc: 0.88, time: 85.63
+updated, epoch 28 saved
+after epoch 29/35, train_loss: 0.263, train_acc: 0.91, test_acc: 0.89, time: 85.02
+updated, epoch 29 saved
+after epoch 30/35, train_loss: 0.259, train_acc: 0.91, test_acc: 0.89, time: 85.49
+updated, epoch 30 saved
+after epoch 31/35, train_loss: 0.256, train_acc: 0.91, test_acc: 0.89, time: 85.03
+updated, epoch 31 saved
+after epoch 32/35, train_loss: 0.256, train_acc: 0.91, test_acc: 0.89, time: 85.11
+updated, epoch 32 saved
+after epoch 33/35, train_loss: 0.251, train_acc: 0.91, test_acc: 0.87, time: 85.22
+updated, epoch 33 saved
+after epoch 34/35, train_loss: 0.250, train_acc: 0.91, test_acc: 0.88, time: 85.32
+updated, epoch 34 saved
+after epoch 35/35, train_loss: 0.245, train_acc: 0.91, test_acc: 0.83, time: 86.13
+updated, epoch 35 saved

@@ -23,3 +23,12 @@ run3:
   花费时间很长(38s/epoch)
 3.运行结果:
   train_acc: 0.86, test_acc: 0.85
+
+run4:
+1.参数信息等见文件run4.txt
+2.run1, run4对比: (分别使用CNN, ResNet18)
+  一开始的准确率run4较好
+  run4用时较长(总共约1h)
+  最后的结果是run1好于run4
+  run1更稳定 准确率一直在提升 而run4在上下波动
+  但run4的最高准确率为0.89 优于run1 在程序中若用在线更新算法则会好于run1
