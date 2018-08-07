@@ -1,0 +1,6 @@
+命令:
+$ CUDA_VISIBLE_DEVICES=1 nohup python trainval_net.py --dataset pascal_voc
+--net res101 --cuda --epochs 10 --bs 4 --lr 0.004 --lr_decay_step 8 > results.txt 2>&1 &
+和run1, run3几乎相同 但去掉了图像的随机翻转:
+cfg.TRAIN.USE_FLIPPED = False
+显存: 10546M

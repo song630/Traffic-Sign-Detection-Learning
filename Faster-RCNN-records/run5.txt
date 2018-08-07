@@ -1,0 +1,5 @@
+命令:
+$ CUDA_VISIBLE_DEVICES=1 nohup python trainval_net.py --dataset pascal_voc
+--net res101 --cuda --epochs 10 --bs 1 --lr 0.0005 --lr_decay_step 4 > results.txt 2>&1 &
+在run2基础上修改
+显存: 3340M

@@ -4,6 +4,14 @@ import torch.nn as nn
 class ResModule(nn.Module):
 	def __init__(self, in_chan, out_chan, down_scale=False):
 		super(ResModule, self).__init__()
+		"""
+		BUGS:
+		enery block contains 2 conv layers,
+		according to the structure of ResNet,
+		the block may be different under 2 cases:
+		1.from one size of channel to another size: out_chan != in_chann;
+		2.when the size of image should be down-scaled: stride = 2.
+		"""
 		self.conv1 = nn.Conv2d(in_channels=in_chan, out_channels=in_chan,
 			kernel_size=3, stride=2 if down_scale else 1, padding=1)
 		self.norm1 = nn.BatchNorm2d(in_chan)
@@ -16,6 +24,7 @@ class ResModule(nn.Module):
 		self.relu2 = nn.ReLU()
 		self.shortcut = nn.Sequential()
 		if down_scale or in_chan != out_chan:
+			# add this code block so that it can apply to the 2 changes mentioned above
 			self.shortcut = nn.Sequential(
 				nn.Conv2d(in_channels=in_chan, out_channels=out_chan, kernel_size=3,
 					stride=2 if down_scale else 1, padding=1),
