@@ -4,3 +4,520 @@ $ CUDA_VISIBLE_DEVICES=1 nohup python trainval_net.py --dataset pascal_voc
 和run1, run3几乎相同 但去掉了图像的随机翻转:
 cfg.TRAIN.USE_FLIPPED = False
 显存: 10546M
+
+nohup: 忽略输入
+Called with args:
+Namespace(batch_size=4, checkepoch=1, checkpoint=0, checkpoint_interval=10000,
+checksession=1, class_agnostic=False, cuda=True, dataset='pascal_voc',
+disp_interval=100, large_scale=False, lr=0.004, lr_decay_gamma=0.1, lr_decay_step=8,
+mGPUs=False, max_epochs=10, net='res101', num_workers=0, optimizer='sgd',
+resume=False, save_dir='to_load/', session=1, start_epoch=1, use_tfboard=False)
+Using config:
+{'ANCHOR_RATIOS': [0.5, 1, 2],
+ 'ANCHOR_SCALES': [8, 16, 32],
+ 'CROP_RESIZE_WITH_MAX_POOL': False,
+ 'CUDA': False,
+ 'DATA_DIR': '/data',
+ 'DEDUP_BOXES': 0.0625,
+ 'EPS': 1e-14,
+ 'EXP_DIR': 'res101',
+ 'FEAT_STRIDE': [16],
+ 'GPU_ID': 0,
+ 'MATLAB': 'matlab',
+ 'MAX_NUM_GT_BOXES': 20,
+ 'MOBILENET': {'DEPTH_MULTIPLIER': 1.0,
+               'FIXED_LAYERS': 5,
+               'REGU_DEPTH': False,
+               'WEIGHT_DECAY': 4e-05},
+ 'PIXEL_MEANS': array([[[102.9801, 115.9465, 122.7717]]]),
+ 'POOLING_MODE': 'align',
+ 'POOLING_SIZE': 7,
+ 'RESNET': {'FIXED_BLOCKS': 1, 'MAX_POOL': False},
+ 'RNG_SEED': 3,
+ 'ROOT_DIR': 'faster-rcnn.pytorch4',
+ 'TEST': {'BBOX_REG': True,
+          'HAS_RPN': True,
+          'MAX_SIZE': 1000,
+          'MODE': 'nms',
+          'NMS': 0.3,
+          'PROPOSAL_METHOD': 'gt',
+          'RPN_MIN_SIZE': 16,
+          'RPN_NMS_THRESH': 0.7,
+          'RPN_POST_NMS_TOP_N': 300,
+          'RPN_PRE_NMS_TOP_N': 6000,
+          'RPN_TOP_N': 5000,
+          'SCALES': [600],
+          'SVM': False},
+ 'TRAIN': {'ASPECT_GROUPING': False,
+           'BATCH_SIZE': 128,
+           'BBOX_INSIDE_WEIGHTS': [1.0, 1.0, 1.0, 1.0],
+           'BBOX_NORMALIZE_MEANS': [0.0, 0.0, 0.0, 0.0],
+           'BBOX_NORMALIZE_STDS': [0.1, 0.1, 0.2, 0.2],
+           'BBOX_NORMALIZE_TARGETS': True,
+           'BBOX_NORMALIZE_TARGETS_PRECOMPUTED': True,
+           'BBOX_REG': True,
+           'BBOX_THRESH': 0.5,
+           'BG_THRESH_HI': 0.5,
+           'BG_THRESH_LO': 0.0,
+           'BIAS_DECAY': False,
+           'BN_TRAIN': False,
+           'DISPLAY': 20,
+           'DOUBLE_BIAS': False,
+           'FG_FRACTION': 0.25,
+           'FG_THRESH': 0.5,
+           'GAMMA': 0.1,
+           'HAS_RPN': True,
+           'IMS_PER_BATCH': 1,
+           'LEARNING_RATE': 0.001,
+           'MAX_SIZE': 1000,
+           'MOMENTUM': 0.9,
+           'PROPOSAL_METHOD': 'gt',
+           'RPN_BATCHSIZE': 256,
+           'RPN_BBOX_INSIDE_WEIGHTS': [1.0, 1.0, 1.0, 1.0],
+           'RPN_CLOBBER_POSITIVES': False,
+           'RPN_FG_FRACTION': 0.5,
+           'RPN_MIN_SIZE': 8,
+           'RPN_NEGATIVE_OVERLAP': 0.3,
+           'RPN_NMS_THRESH': 0.7,
+           'RPN_POSITIVE_OVERLAP': 0.7,
+           'RPN_POSITIVE_WEIGHT': -1.0,
+           'RPN_POST_NMS_TOP_N': 2000,
+           'RPN_PRE_NMS_TOP_N': 12000,
+           'SCALES': [600],
+           'SNAPSHOT_ITERS': 5000,
+           'SNAPSHOT_KEPT': 3,
+           'SNAPSHOT_PREFIX': 'res101_faster_rcnn',
+           'STEPSIZE': [30000],
+           'SUMMARY_INTERVAL': 180,
+           'TRIM_HEIGHT': 600,
+           'TRIM_WIDTH': 600,
+           'TRUNCATED': False,
+           'USE_ALL_GT': True,
+           'USE_FLIPPED': True,
+           'USE_GT': False,
+           'WEIGHT_DECAY': 0.0001},
+ 'USE_GPU_NMS': True}
+Loaded dataset `voc_2007_trainval` for training
+Set proposal method: gt
+Preparing training data...
+voc_2007_trainval gt roidb loaded from /voc_2007_trainval_gt_roidb.pkl
+done
+before filtering, there are 5011 images...
+after filtering, there are 5011 images...
+5011 roidb entries
+Loading pretrained weights from data/pretrained_model/resnet101_caffe.pth
+[session 1][epoch  1][iter    0/1252] loss: 4.1236, lr: 4.00e-03
+			fg/bg=(68/444), time cost: 1.344395
+			rpn_cls: 0.7504, rpn_box: 0.0569, rcnn_cls: 3.0010, rcnn_box 0.3154
+[session 1][epoch  1][iter  100/1252] loss: 1.6625, lr: 4.00e-03
+			fg/bg=(120/392), time cost: 50.510074
+			rpn_cls: 0.2612, rpn_box: 0.3332, rcnn_cls: 0.9351, rcnn_box 0.5303
+[session 1][epoch  1][iter  200/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(60/452), time cost: 51.782517
+			rpn_cls: 0.5843, rpn_box: 0.0546, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  1][iter  300/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(60/452), time cost: 52.112896
+			rpn_cls: 0.4798, rpn_box: 0.2206, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  1][iter  400/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(112/400), time cost: 52.082736
+			rpn_cls: 0.3683, rpn_box: 0.0399, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  1][iter  500/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(97/415), time cost: 52.511533
+			rpn_cls: 0.3294, rpn_box: 0.0337, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  1][iter  600/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(110/402), time cost: 52.880444
+			rpn_cls: 0.3142, rpn_box: 0.0350, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  1][iter  700/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(103/409), time cost: 53.148775
+			rpn_cls: 0.4396, rpn_box: 0.1831, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  1][iter  800/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(69/443), time cost: 54.068092
+			rpn_cls: 0.2423, rpn_box: 0.0231, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  1][iter  900/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(83/429), time cost: 54.050688
+			rpn_cls: 0.2782, rpn_box: 0.0643, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  1][iter 1000/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(47/465), time cost: 52.575099
+			rpn_cls: 0.2345, rpn_box: 0.0235, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  1][iter 1100/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(80/432), time cost: 54.385654
+			rpn_cls: 0.2922, rpn_box: 0.0382, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  1][iter 1200/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(83/429), time cost: 52.773261
+			rpn_cls: 0.4402, rpn_box: 0.2123, rcnn_cls: nan, rcnn_box nan
+save model: /faster_rcnn_1_1_1251.pth
+26.767771005630493
+[session 1][epoch  2][iter    0/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(103/409), time cost: 0.422214
+			rpn_cls: 0.4339, rpn_box: 0.1700, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  2][iter  100/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(87/425), time cost: 53.189249
+			rpn_cls: 0.2844, rpn_box: 0.0706, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  2][iter  200/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(75/437), time cost: 52.392147
+			rpn_cls: 0.2161, rpn_box: 0.0283, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  2][iter  300/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(115/397), time cost: 51.559510
+			rpn_cls: 0.2498, rpn_box: 0.0527, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  2][iter  400/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(91/421), time cost: 51.859204
+			rpn_cls: 0.2412, rpn_box: 0.0835, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  2][iter  500/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(57/455), time cost: 52.802869
+			rpn_cls: 0.2349, rpn_box: 0.0461, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  2][iter  600/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(90/422), time cost: 52.638316
+			rpn_cls: 0.2898, rpn_box: 0.0706, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  2][iter  700/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(82/430), time cost: 51.665353
+			rpn_cls: 0.2445, rpn_box: 0.0392, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  2][iter  800/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(23/489), time cost: 52.198986
+			rpn_cls: 0.4584, rpn_box: 0.1961, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  2][iter  900/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(57/455), time cost: 53.626529
+			rpn_cls: 0.3561, rpn_box: 0.0717, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  2][iter 1000/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(83/429), time cost: 52.502428
+			rpn_cls: 0.2738, rpn_box: 0.0502, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  2][iter 1100/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(99/413), time cost: 52.213819
+			rpn_cls: 0.1860, rpn_box: 0.0318, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  2][iter 1200/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(59/453), time cost: 52.649327
+			rpn_cls: 0.3463, rpn_box: 0.0725, rcnn_cls: nan, rcnn_box nan
+save model: pascal_voc/faster_rcnn_1_2_1251.pth
+27.23040461540222
+[session 1][epoch  3][iter    0/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(75/437), time cost: 0.438210
+			rpn_cls: 0.1575, rpn_box: 0.0150, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  3][iter  100/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(54/458), time cost: 52.375232
+			rpn_cls: 0.3450, rpn_box: 0.0716, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  3][iter  200/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(110/402), time cost: 53.239783
+			rpn_cls: 0.3675, rpn_box: 0.0814, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  3][iter  300/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(61/451), time cost: 52.843081
+			rpn_cls: 0.3932, rpn_box: 0.0810, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  3][iter  400/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(72/440), time cost: 52.283235
+			rpn_cls: 0.1577, rpn_box: 0.0355, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  3][iter  500/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(95/417), time cost: 52.847165
+			rpn_cls: 0.3480, rpn_box: 0.0896, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  3][iter  600/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(66/446), time cost: 52.922989
+			rpn_cls: 0.2833, rpn_box: 0.0638, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  3][iter  700/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(31/481), time cost: 52.921736
+			rpn_cls: 0.1774, rpn_box: 0.0321, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  3][iter  800/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(68/444), time cost: 52.828782
+			rpn_cls: 0.1740, rpn_box: 0.0235, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  3][iter  900/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(74/438), time cost: 52.946290
+			rpn_cls: 0.1901, rpn_box: 0.0263, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  3][iter 1000/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(49/463), time cost: 52.878086
+			rpn_cls: 0.3438, rpn_box: 0.0347, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  3][iter 1100/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(85/427), time cost: 53.464808
+			rpn_cls: 0.2382, rpn_box: 0.0524, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  3][iter 1200/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(47/465), time cost: 52.667383
+			rpn_cls: 0.1968, rpn_box: 0.0386, rcnn_cls: nan, rcnn_box nan
+save model: pascal_voc/faster_rcnn_1_3_1251.pth
+27.931894779205322
+[session 1][epoch  4][iter    0/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(113/399), time cost: 0.428315
+			rpn_cls: 0.3461, rpn_box: 0.0719, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  4][iter  100/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(44/468), time cost: 55.028619
+			rpn_cls: 0.1439, rpn_box: 0.0254, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  4][iter  200/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(78/434), time cost: 54.076744
+			rpn_cls: 0.2576, rpn_box: 0.0920, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  4][iter  300/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(104/408), time cost: 54.493801
+			rpn_cls: 0.3566, rpn_box: 0.1503, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  4][iter  400/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(86/426), time cost: 53.070944
+			rpn_cls: 0.3216, rpn_box: 0.0619, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  4][iter  500/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(70/442), time cost: 54.445700
+			rpn_cls: 0.2865, rpn_box: 0.1096, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  4][iter  600/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(57/455), time cost: 54.359438
+			rpn_cls: 0.2225, rpn_box: 0.0459, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  4][iter  700/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(101/411), time cost: 54.369443
+			rpn_cls: 0.4488, rpn_box: 0.2350, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  4][iter  800/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(54/458), time cost: 54.399475
+			rpn_cls: 0.1511, rpn_box: 0.0191, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  4][iter  900/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(95/417), time cost: 53.875982
+			rpn_cls: 0.4013, rpn_box: 0.0773, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  4][iter 1000/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(73/439), time cost: 53.513833
+			rpn_cls: 0.2412, rpn_box: 0.0511, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  4][iter 1100/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(52/460), time cost: 53.403363
+			rpn_cls: 0.1892, rpn_box: 0.0259, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  4][iter 1200/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(72/440), time cost: 53.625948
+			rpn_cls: 0.1674, rpn_box: 0.0520, rcnn_cls: nan, rcnn_box nan
+save model: pascal_voc/faster_rcnn_1_4_1251.pth
+26.946260690689087
+[session 1][epoch  5][iter    0/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(72/440), time cost: 0.425655
+			rpn_cls: 0.1882, rpn_box: 0.0348, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  5][iter  100/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(87/425), time cost: 52.576152
+			rpn_cls: 0.1920, rpn_box: 0.0543, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  5][iter  200/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(56/456), time cost: 52.970506
+			rpn_cls: 0.2906, rpn_box: 0.1446, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  5][iter  300/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(44/468), time cost: 53.304924
+			rpn_cls: 0.1676, rpn_box: 0.0428, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  5][iter  400/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(54/458), time cost: 55.139663
+			rpn_cls: 0.3189, rpn_box: 0.0603, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  5][iter  500/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(78/434), time cost: 54.903646
+			rpn_cls: 0.1392, rpn_box: 0.0179, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  5][iter  600/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(105/407), time cost: 53.327496
+			rpn_cls: 0.3516, rpn_box: 0.0683, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  5][iter  700/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(68/444), time cost: 52.477787
+			rpn_cls: 0.4365, rpn_box: 0.0744, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  5][iter  800/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(64/448), time cost: 52.940209
+			rpn_cls: 0.1655, rpn_box: 0.0135, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  5][iter  900/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(58/454), time cost: 54.900380
+			rpn_cls: 0.2488, rpn_box: 0.0492, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  5][iter 1000/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(81/431), time cost: 54.334306
+			rpn_cls: 0.3506, rpn_box: 0.0709, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  5][iter 1100/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(79/433), time cost: 53.309656
+			rpn_cls: 0.1861, rpn_box: 0.0223, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  5][iter 1200/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(74/438), time cost: 54.790998
+			rpn_cls: 0.1915, rpn_box: 0.0356, rcnn_cls: nan, rcnn_box nan
+save model: pascal_voc/faster_rcnn_1_5_1251.pth
+28.262667655944824
+[session 1][epoch  6][iter    0/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(77/435), time cost: 0.428999
+			rpn_cls: 0.1352, rpn_box: 0.0421, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  6][iter  100/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(82/430), time cost: 53.569447
+			rpn_cls: 0.4096, rpn_box: 0.1044, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  6][iter  200/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(58/454), time cost: 54.995132
+			rpn_cls: 0.5837, rpn_box: 0.1867, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  6][iter  300/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(36/476), time cost: 52.756618
+			rpn_cls: 0.1755, rpn_box: 0.1051, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  6][iter  400/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(77/435), time cost: 55.814500
+			rpn_cls: 0.1860, rpn_box: 0.1149, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  6][iter  500/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(64/448), time cost: 52.547870
+			rpn_cls: 0.1454, rpn_box: 0.0479, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  6][iter  600/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(50/462), time cost: 55.921400
+			rpn_cls: 0.1756, rpn_box: 0.0391, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  6][iter  700/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(38/474), time cost: 53.412776
+			rpn_cls: 0.2258, rpn_box: 0.0429, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  6][iter  800/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(80/432), time cost: 53.871241
+			rpn_cls: 0.2924, rpn_box: 0.0542, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  6][iter  900/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(73/439), time cost: 52.940998
+			rpn_cls: 0.4864, rpn_box: 0.1110, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  6][iter 1000/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(18/494), time cost: 55.631754
+			rpn_cls: 0.2066, rpn_box: 0.0394, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  6][iter 1100/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(98/414), time cost: 55.623532
+			rpn_cls: 0.3957, rpn_box: 0.1286, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  6][iter 1200/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(55/457), time cost: 54.186600
+			rpn_cls: 0.2812, rpn_box: 0.0276, rcnn_cls: nan, rcnn_box nan
+save model: pascal_voc/faster_rcnn_1_6_1251.pth
+27.29054570198059
+[session 1][epoch  7][iter    0/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(35/477), time cost: 0.414656
+			rpn_cls: 0.3299, rpn_box: 0.1407, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  7][iter  100/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(81/431), time cost: 53.564192
+			rpn_cls: 0.3280, rpn_box: 0.0991, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  7][iter  200/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(65/447), time cost: 54.231920
+			rpn_cls: 0.1491, rpn_box: 0.0250, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  7][iter  300/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(69/443), time cost: 53.271202
+			rpn_cls: 0.2175, rpn_box: 0.1001, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  7][iter  400/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(46/466), time cost: 54.693876
+			rpn_cls: 0.2089, rpn_box: 0.0302, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  7][iter  500/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(62/450), time cost: 54.766135
+			rpn_cls: 0.2871, rpn_box: 0.0584, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  7][iter  600/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(35/477), time cost: 53.481559
+			rpn_cls: 0.4559, rpn_box: 0.0502, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  7][iter  700/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(27/485), time cost: 54.003683
+			rpn_cls: 0.1988, rpn_box: 0.0480, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  7][iter  800/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(58/454), time cost: 53.189316
+			rpn_cls: 0.3904, rpn_box: 0.0730, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  7][iter  900/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(63/449), time cost: 53.582504
+			rpn_cls: 0.3848, rpn_box: 0.1240, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  7][iter 1000/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(113/399), time cost: 53.463927
+			rpn_cls: 0.4307, rpn_box: 0.1418, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  7][iter 1100/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(36/476), time cost: 54.943798
+			rpn_cls: 0.3171, rpn_box: 0.0395, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  7][iter 1200/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(90/422), time cost: 54.444683
+			rpn_cls: 0.3525, rpn_box: 0.0543, rcnn_cls: nan, rcnn_box nan
+save model: pascal_voc/faster_rcnn_1_7_1251.pth
+27.04714798927307
+[session 1][epoch  8][iter    0/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(60/452), time cost: 0.528870
+			rpn_cls: 0.6041, rpn_box: 0.2457, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  8][iter  100/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(58/454), time cost: 53.285894
+			rpn_cls: 0.1171, rpn_box: 0.0432, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  8][iter  200/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(85/427), time cost: 54.710184
+			rpn_cls: 0.2020, rpn_box: 0.0576, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  8][iter  300/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(104/408), time cost: 52.966097
+			rpn_cls: 0.2128, rpn_box: 0.0825, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  8][iter  400/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(56/456), time cost: 55.352710
+			rpn_cls: 0.2426, rpn_box: 0.0362, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  8][iter  500/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(79/433), time cost: 52.966070
+			rpn_cls: 0.4944, rpn_box: 0.0920, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  8][iter  600/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(41/471), time cost: 54.045161
+			rpn_cls: 0.2103, rpn_box: 0.0297, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  8][iter  700/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(83/429), time cost: 53.359569
+			rpn_cls: 0.4482, rpn_box: 0.1143, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  8][iter  800/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(41/471), time cost: 53.521576
+			rpn_cls: 0.2074, rpn_box: 0.0237, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  8][iter  900/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(33/479), time cost: 54.864585
+			rpn_cls: 0.3065, rpn_box: 0.0814, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  8][iter 1000/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(97/415), time cost: 52.854323
+			rpn_cls: 0.3844, rpn_box: 0.0776, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  8][iter 1100/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(46/466), time cost: 54.954209
+			rpn_cls: 0.2514, rpn_box: 0.0612, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  8][iter 1200/1252] loss: nan, lr: 4.00e-03
+			fg/bg=(111/401), time cost: 53.231841
+			rpn_cls: 0.4262, rpn_box: 0.1032, rcnn_cls: nan, rcnn_box nan
+save model: pascal_voc/faster_rcnn_1_8_1251.pth
+28.482197999954224
+[session 1][epoch  9][iter    0/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(96/416), time cost: 0.429730
+			rpn_cls: 0.2054, rpn_box: 0.0422, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  9][iter  100/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(84/428), time cost: 53.575287
+			rpn_cls: 0.1562, rpn_box: 0.0485, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  9][iter  200/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(29/483), time cost: 53.456496
+			rpn_cls: 0.2004, rpn_box: 0.0062, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  9][iter  300/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(89/423), time cost: 53.015575
+			rpn_cls: 0.2080, rpn_box: 0.0325, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  9][iter  400/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(113/399), time cost: 52.550442
+			rpn_cls: 0.3477, rpn_box: 0.1210, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  9][iter  500/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(72/440), time cost: 54.387167
+			rpn_cls: 0.2234, rpn_box: 0.0877, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  9][iter  600/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(47/465), time cost: 53.427462
+			rpn_cls: 0.2596, rpn_box: 0.0980, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  9][iter  700/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(79/433), time cost: 53.139598
+			rpn_cls: 0.1840, rpn_box: 0.0358, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  9][iter  800/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(40/472), time cost: 54.294265
+			rpn_cls: 0.3812, rpn_box: 0.0923, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  9][iter  900/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(67/445), time cost: 54.198042
+			rpn_cls: 0.4024, rpn_box: 0.1283, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  9][iter 1000/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(121/391), time cost: 53.555277
+			rpn_cls: 0.3126, rpn_box: 0.1246, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  9][iter 1100/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(45/467), time cost: 53.222559
+			rpn_cls: 0.4267, rpn_box: 0.1962, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch  9][iter 1200/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(91/421), time cost: 52.759115
+			rpn_cls: 0.5883, rpn_box: 0.4247, rcnn_cls: nan, rcnn_box nan
+save model: pascal_voc/faster_rcnn_1_9_1251.pth
+27.37804937362671
+[session 1][epoch 10][iter    0/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(89/423), time cost: 0.453518
+			rpn_cls: 0.6304, rpn_box: 0.3623, rcnn_cls: nan, rcnn_box nan
+rpn.py:68: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
+  rpn_cls_prob_reshape = F.softmax(rpn_cls_score_reshape)
+faster_rcnn.py:98: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
+  cls_prob = F.softmax(cls_score)
+
+[session 1][epoch 10][iter  100/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(94/418), time cost: 54.335231
+			rpn_cls: 0.3439, rpn_box: 0.0942, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch 10][iter  200/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(54/458), time cost: 55.295901
+			rpn_cls: 0.3495, rpn_box: 0.0462, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch 10][iter  300/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(57/455), time cost: 54.923658
+			rpn_cls: 0.3250, rpn_box: 0.0922, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch 10][iter  400/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(47/465), time cost: 54.319494
+			rpn_cls: 0.3709, rpn_box: 0.0422, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch 10][iter  500/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(63/449), time cost: 52.864753
+			rpn_cls: 0.1076, rpn_box: 0.0278, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch 10][iter  600/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(90/422), time cost: 53.915591
+			rpn_cls: 0.2106, rpn_box: 0.0383, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch 10][iter  700/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(97/415), time cost: 53.323061
+			rpn_cls: 0.5213, rpn_box: 0.1305, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch 10][iter  800/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(98/414), time cost: 52.532926
+			rpn_cls: 0.1627, rpn_box: 0.0316, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch 10][iter  900/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(39/473), time cost: 53.841898
+			rpn_cls: 0.2070, rpn_box: 0.0572, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch 10][iter 1000/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(85/427), time cost: 53.691667
+			rpn_cls: 0.3871, rpn_box: 0.0536, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch 10][iter 1100/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(83/429), time cost: 54.438650
+			rpn_cls: 0.5542, rpn_box: 0.2631, rcnn_cls: nan, rcnn_box nan
+[session 1][epoch 10][iter 1200/1252] loss: nan, lr: 4.00e-04
+			fg/bg=(76/436), time cost: 54.281111
+			rpn_cls: 0.2148, rpn_box: 0.0618, rcnn_cls: nan, rcnn_box nan
+save model: /pascal_voc/faster_rcnn_1_10_1251.pth
+28.50786828994751
