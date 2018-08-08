@@ -399,6 +399,9 @@ if __name__ == '__main__':
 	data_iter = iter(dataloader)  # 遍历之前的sampler (有一个包含了每个batch中所有元素索引的矩阵)
 	for step in range(iters_per_epoch):  # 一个epoch中的每次迭代
 	  data = next(data_iter) # 取下次迭代的数据
+	  # ===== Tensor基本操作
+	  # 任何要原地改动tensor的操作都需要加_ 比如x.copy_(y), x.t_(), x.add_(y) will change x
+	  # =====
 	  im_data.data.resize_(data[0].size()).copy_(data[0])
 	  im_info.data.resize_(data[1].size()).copy_(data[1])
 	  gt_boxes.data.resize_(data[2].size()).copy_(data[2]) # gt是梯度??
