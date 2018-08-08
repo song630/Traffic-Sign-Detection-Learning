@@ -18,7 +18,7 @@ sys.path.append('/home/storage3/traffic-sign/test2/')
 from ResNet import ResNet18
 
 home_dir = '/home/storage3/traffic-sign/test3/'
-data_dir = 'data/CUB200/CUB_200_2011/'
+data_dir = home_dir + 'data/CUB200/CUB_200_2011/'
 """
 about the dataset:
 1.altogether 11788 samples, 200 classes of birds
@@ -72,32 +72,99 @@ n_images = 11788
 n_classes = 200
 
 
-def get_images(root = home_dir + data_dir):
+def get_train_test(root=data_dir):
 	file_name = root + 'train_test_split.txt'
-	# train_images, test_images: stores the indexes of the images
-	train_images, test_images = [], []
+	# train_indexes, test_indexes: stores the indexes of the images
+	train_indexes, test_indexes = [], []
 	with open(file_name) as f:
 		for line in f.read().split():
 			# every line in the file is like: <image_id> <is_train_set>,
 			# if <is_train_set> == 1, then it belongs to training set.
 			# notice: index starts from 1.
 			index, is_train = line.split(' ')
-			if is_train:
-				train_images.append(index)
+			if bool(is_train):
+				train_indexes.append(int(index))
 			else:
-				test_images.append(index)
+				test_indexes.append(int(index))
+	return train_indexes, test_indexes
+
+
+def get_imgs(root=data_dir, train_indexes, test_indexes):
+	file_name = data_dir + 'images.txt'
+	paths = [] # stores all relative paths of images
+	paths.append('none') # paths[0] is dummy
+	with open(file_name) as f:
+		for line in f.read().split():
+			paths.append(line.split(' ')[1])
+	# absolute paths of training images
+	train_images = [(i, data_dir + 'images' + paths[i]) for i in train_indexes]
+	test_images = [(i, data_dir + 'images' + paths[i]) for i in test_indexes]
 	return train_images, test_images
 
 
-def get_bboxes(root = home_dir + data_dir):
+def get_bboxes(root=data_dir, train_indexes, test_indexes):
 	file_name = root + 'bounding_boxes.txt'
 	train_bbox, test_bbox = [], []
-	all_bbox = np.array(11788 + 1, 4) # construct a 2-dimentional array
-	all_bbox[0] = [0.0, 0.0, 0.0, 0.0] # the first row [0] is dummy
+	# construct a 2-dimentional array, it has (11788 + 1) * 4 float elements
+	all_bbox.append([0.0, 0.0, 0.0, 0.0]) # the first row [0] is dummy
 	with open(file_name) as f:
-		for i, line in enumerate(f.read().split()): # i starts from 0
-			index, x, y, w, h = line.split()
-			all_bbox[i + 1] = [x, y, w, h]
+		for line in f.read().split():
+			_, x, y, w, h = line.split(' ')
+			all_bbox.append([float(x), float(y), float(w), float(h)])
+	# elements in train bbox: (index, [x, y, w, h])
+	train_bbox = [(i, all_bbox[i]) for i in train_indexes]
+	test_bbox = [(i, all_bbox[i]) for i in test_indexes]
+	return train_bbox, test_bbox # convert to Tensor later in class Dataset's __getitem__()
+
+
+def get_lbls(root=data_dir, train_indexes, test_indexes): # ge the classification labels
+	class_file_name = root + 'classes.txt'
+	label_file_name = root + 'image_class_labels.txt'
+	classes_map = []
+	classes_map.append('none') # dummy at classes_map[0]
+	all_labels = []
+	all_labels.append('none') # dummy at all_labels[0]
+	with open(class_file_name) as f:
+		for line in f.read().split():
+			classes_map.append(line.split(' ')[1])
+	with open(label_file_name) as f:
+		for line in f.read().split():
+			all_labels.append(int(line.split(' ')[1]))
+	train_labels = [(i, classes_map[all_labels[i]]) for i in train_indexes]
+	test_labels = [(i, classes_map[all_labels[i]]) for i in test_indexes]
+	return train_labels, test_labels
+
+
+train_indexes, test_indexes = get_train_test(data_dir)
+# element format: (index, absolute path)
+train_images, test_images = get_imgs(data_dir, train_indexes, test_indexes)
+# element format: (index, [x, y, w, h])
+train_bbox, test_bbox = get_bboxes(data_dir, train_indexes, test_indexes)
+# element format: (index, class)
+train_labels, test_labels = get_lbls(data_dir, train_indexes, test_indexes)
+
+
+class CUBDataset(Dataset):
+	def __init__(self, size, train=True, trans=None, root=data_dir):
+		self.size = size
+		global train_images, test_images
+		global train_bbox, test_bbox
+		global train_labels, test_labels
+		if train:
+			self.imgs, self.bboxes, self.lbls = train_images, train_bbox, train_labels
+		else:
+			self.imgs, self.bboxes, self.lbls = test_images, test_bbox, test_labels
+		self.transform = trans
+		print('Dataset loaded')
+
+
+	def __getitem__(self, index):
+		img, bbox, lbl = self.imgs[index][1], self.bboxes[index][1], self.lbls[index][1]
+		return self.transform(Image.open(img), bbox, lbl, self.size)
+
+
+	def __len__(self):
+		return len(self.imgs)
 
 
 if __name__ = '__main__':
