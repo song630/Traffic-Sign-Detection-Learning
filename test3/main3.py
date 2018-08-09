@@ -184,8 +184,7 @@ def compute_acc(pred_bbox, target_bbox, size=224, thres=0.75):
 	min_y1 = torch.min(pred_bbox[:, 1] + pred_bbox[:, 3], target_bbox[:, 1] + target_bbox[:, 3])
 	intersec = (min_x1 - max_x + 1) * (min_y1 - max_y + 1)
 	union = pred_bbox[:, 2] * pred_bbox[:, 3] + target_bbox[:, 2] * target_bbox[:, 3] - intersec
-	IoU = intersec / 
-	# print('IoU:', IoU)
+	IoU = intersec / union
 	count = pred_bbox.size()[0]
 	return (IoU >= thres).sum() / count
 

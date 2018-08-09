@@ -1,0 +1,14 @@
+# top-most EditorConfig file
+root = true
+
+[*.py]
+indent_style = tab
+indent_size = 4
+
+[*.c]
+indent_style = tab
+indent_size = 4
+
+[*.h]
+indent_style = tab
+indent_size = 4
