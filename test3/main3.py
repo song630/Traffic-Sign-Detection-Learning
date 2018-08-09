@@ -74,38 +74,42 @@ def get_train_test(root=data_dir):
 	# train_indexes, test_indexes: stores the indexes of the images
 	train_indexes, test_indexes = [], []
 	with open(file_name) as f:
-		for line in f.read().split():
+		for line in f.read().splitlines():
 			# every line in the file is like: <image_id> <is_train_set>,
 			# if <is_train_set> == 1, then it belongs to training set.
 			# notice: index starts from 1.
 			index, is_train = line.split(' ')
-			if bool(is_train):
+			# === drop images with index larger then 11729:
+			# === some images of class 200 seem to have unknown problems.
+			if int(index) >= 11729: break
+			if is_train == '1'
 				train_indexes.append(int(index))
 			else:
 				test_indexes.append(int(index))
 	return train_indexes, test_indexes
 
 
-def get_imgs(root=data_dir, train_indexes, test_indexes):
+def get_imgs(train_indexes, test_indexes, root=data_dir):
 	file_name = data_dir + 'images.txt'
 	paths = [] # stores all relative paths of images
 	paths.append('none') # paths[0] is dummy
 	with open(file_name) as f:
-		for line in f.read().split():
+		for line in f.read().splitlines():
 			paths.append(line.split(' ')[1])
 	# absolute paths of training images
-	train_images = [(i, data_dir + 'images' + paths[i]) for i in train_indexes]
-	test_images = [(i, data_dir + 'images' + paths[i]) for i in test_indexes]
+	train_images = [(i, data_dir + 'images/' + paths[i]) for i in train_indexes]
+	test_images = [(i, data_dir + 'images/' + paths[i]) for i in test_indexes]
 	return train_images, test_images
 
 
-def get_bboxes(root=data_dir, train_indexes, test_indexes):
+def get_bboxes(train_indexes, test_indexes, root=data_dir):
 	file_name = root + 'bounding_boxes.txt'
 	train_bbox, test_bbox = [], []
 	# construct a 2-dimentional array, it has (11788 + 1) * 4 float elements
+	all_bbox = []
 	all_bbox.append([0.0, 0.0, 0.0, 0.0]) # the first row [0] is dummy
 	with open(file_name) as f:
-		for line in f.read().split():
+		for line in f.read().splitlines():
 			_, x, y, w, h = line.split(' ')
 			all_bbox.append([float(x), float(y), float(w), float(h)])
 	# elements in train bbox: (index, [x, y, w, h])
@@ -114,7 +118,7 @@ def get_bboxes(root=data_dir, train_indexes, test_indexes):
 	return train_bbox, test_bbox # convert to Tensor later in class Dataset's __getitem__()
 
 
-def get_lbls(root=data_dir, train_indexes, test_indexes): # ge the classification labels
+def get_lbls(train_indexes, test_indexes, root=data_dir): # ge the classification labels
 	# class_file_name = root + 'classes.txt'
 	label_file_name = root + 'image_class_labels.txt'
 	# classes_map = []
@@ -127,7 +131,7 @@ def get_lbls(root=data_dir, train_indexes, test_indexes): # ge the classificatio
 			classes_map.append(line.split(' ')[1])
 	"""
 	with open(label_file_name) as f:
-		for line in f.read().split():
+		for line in f.read().splitlines():
 			all_labels.append(int(line.split(' ')[1]))
 	train_labels = [(i, all_labels[i]) for i in train_indexes]
 	test_labels = [(i, all_labels[i]) for i in test_indexes]
@@ -136,18 +140,19 @@ def get_lbls(root=data_dir, train_indexes, test_indexes): # ge the classificatio
 
 train_indexes, test_indexes = get_train_test(data_dir)
 # element format: (index, absolute path)
-train_images, test_images = get_imgs(data_dir, train_indexes, test_indexes)
+train_images, test_images = get_imgs(train_indexes, test_indexes, data_dir)
 # element format: (index, [x, y, w, h])
-train_bbox, test_bbox = get_bboxes(data_dir, train_indexes, test_indexes)
+train_bbox, test_bbox = get_bboxes(train_indexes, test_indexes, data_dir)
 # element format: (index, class)
-train_labels, test_labels = get_lbls(data_dir, train_indexes, test_indexes)
+train_labels, test_labels = get_lbls(train_indexes, test_indexes, data_dir)
 
 
 def data_transform(img, bbox, lbl, size=224):
 	# first deal with img:
+	#print('in data_transform:')
 	width, height = img.size
 	preprocess = tf.Compose([
-		tf.Resize(size), # ?? the ratio of original image has been modified
+		tf.Resize((size, size)), # ?? the ratio of original image has been modified
 		tf.ToTensor(),
 		tf.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 	])
@@ -162,7 +167,9 @@ def data_transform(img, bbox, lbl, size=224):
 	bbox[2] = min(size - 1 - bbox[0], bbox[2])
 	bbox[3] = min(size - 1 - bbox[1], bbox[3])
 	bbox = torch.FloatTensor(bbox) # convert to float tensor
-	return img, bbox, torch.IntTensor([lbl])
+	# === this line has been deleted: lbl = torch.LongTensor([lbl]),
+	# === since targets2 will be LongTensor of 32*1, but it should be 32.
+	return img, bbox, lbl
 
 
 def compute_acc(pred_bbox, target_bbox, size=224, thres=0.75):
@@ -177,7 +184,8 @@ def compute_acc(pred_bbox, target_bbox, size=224, thres=0.75):
 	min_y1 = torch.min(pred_bbox[:, 1] + pred_bbox[:, 3], target_bbox[:, 1] + target_bbox[:, 3])
 	intersec = (min_x1 - max_x + 1) * (min_y1 - max_y + 1)
 	union = pred_bbox[:, 2] * pred_bbox[:, 3] + target_bbox[:, 2] * target_bbox[:, 3] - intersec
-	IoU = intersec / union
+	IoU = intersec / 
+	# print('IoU:', IoU)
 	count = pred_bbox.size()[0]
 	return (IoU >= thres).sum() / count
 
@@ -199,7 +207,8 @@ class CUBDataset(Dataset):
 	def __getitem__(self, index):
 		img, bbox, lbl = self.imgs[index][1], self.bboxes[index][1], self.lbls[index][1]
 		# aside from img, also convert bbox and lbl to tensors
-		return self.transform(Image.open(img), bbox, lbl, self.size)
+		# === must convert to RGB, since some pics contains only 1 channel.
+		return self.transform(Image.open(img).convert('RGB'), bbox, lbl, self.size)
 
 
 	def __len__(self):
@@ -208,11 +217,12 @@ class CUBDataset(Dataset):
 
 class DetectionNet(nn.Module):
 	def __init__(self, pre_model, num_classes=200): # pre_model: resnet18
+		super(DetectionNet, self).__init__()
 		self.head = nn.Sequential(*list(pre_model.children())[:-1]) # discard the final fc layer
 		self.n_features = pre_model.fc.in_features
 		# ?? convert the fc layers to conv layers later
-		self.fc1 = nn.Linear(n_features, 4) # predict the 4 coordinates of bbox
-		self.fc2 = nn.Linear(n_features, num_classes) # predict which class the input belongs to
+		self.fc1 = nn.Linear(self.n_features, 4) # predict the 4 coordinates of bbox
+		self.fc2 = nn.Linear(self.n_features, num_classes) # predict which class the input belongs to
 
 
 	def forward(self, x):
@@ -221,7 +231,7 @@ class DetectionNet(nn.Module):
 		return self.fc1(x), self.fc2(x) # return bbox, class distribution
 
 
-if __name__ = '__main__':
+if __name__ == '__main__':
 	args = parse_args()
 	print('Called with args:')
 	print(args)
@@ -232,7 +242,7 @@ if __name__ = '__main__':
 	train_loader = torch.utils.data.DataLoader(train_set, batch_size=args.batch_size,
 		shuffle=True, num_workers=args.num_workers)
 	test_loader = torch.utils.data.DataLoader(test_set, batch_size=args.batch_size,
-		shuffle=True, num_workers=args.num_workers)
+		shuffle=False, num_workers=args.num_workers)
 
 	n_images = 11788
 	n_classes = 200
@@ -242,7 +252,7 @@ if __name__ = '__main__':
 	else: # default
 		model = models.resnet18(pretrained=True)
 	net = DetectionNet(model, n_classes)
-	criterion1 = nn.SmoothL1Loss() # predicted bbox
+	criterion1 = nn.SmoothL1Loss().cuda() # predicted bbox
 	criterion2 = nn.CrossEntropyLoss()
 	optimizer = torch.optim.Adam(net.parameters(), lr=args.lr, weight_decay=1e-4)
 	scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.decay_step, gamma=0.1)
@@ -265,8 +275,9 @@ if __name__ = '__main__':
 		adjust_learning_rate(optimizer, optimizer.param_groups[0]['lr'])
 		print("loaded checkpoint %s" % (load_name))
 
+	best_acc = 0.0 # online, update
+
 	for epoch in range(start_epoch, args.max_epochs): # in every epoch, do training and test
-		best_acc = 0.0 # online, update
 		train_loss, train_acc = 0.0, 0.0
 		start = time.time()
 		net.train()
@@ -278,6 +289,7 @@ if __name__ = '__main__':
 			else:
 				raise Exception('No cuda')
 			outputs1, outputs2 = net(inputs)
+			# loss1, loss2: FloatTensor of size 1, so are loss1.mean() and loss2.mean()
 			loss1 = criterion1(outputs1, targets1) # bbox
 			loss2 = criterion2(outputs2, targets2) # classification
 			loss = loss1.mean() + loss2.mean()
@@ -291,7 +303,7 @@ if __name__ = '__main__':
 
 		test_loss, test_acc = 0.0, 0.0
 		net.eval()
-		for img, bbox, lbl in test_loader;
+		for img, bbox, lbl in test_loader:
 			if args.cuda:
 				inputs = Variable(img.cuda())
 				targets1 = Variable(bbox.cuda())
@@ -317,5 +329,5 @@ if __name__ = '__main__':
 			)
 			print('updated, epoch {} saved'.format(epoch + 1))
 
-		print('after epoch {}/{}, train_loss: {:.3f}, train_acc: {:.2f}, test_loss: {:.3f}, test_acc: {:.2f}, time: {:.2f}'.format(
-			epoch + 1, args.max_epochs, train_loss, train_acc, test_loss, test_acc, end - start))
+		end = time.time()
+		print('after epoch {}/{}, train_loss: {:.3f}, train_acc: {:.2f}, test_loss: {:.3f}, test_acc: {:.2f}, time: {:.2f}'.format(epoch + 1, args.max_epochs, train_loss, train_acc, test_loss, test_acc, end - start))

@@ -1,0 +1,59 @@
+显存: 2205M
+GPU-Util: 最高40% 一直在波动 有时是0%
+80-90s/epoch
+
+小结:
+1.检查acc的计算 大部分时候结果都是0.25, 0.5, 0.75等
+2.loss的波动比较大 不稳定 下次可以减小lr 并将decay_step减小到8
+3.多分类的最后替换为soft_max
+  参考:
+  output = model(data)
+  output = F.log_softmax(output, dim=1)
+  loss = F.nll_loss(output, target)
+
+输出:
+$ CUDA_VISIBLE_DEVICES=3 python main3.py --cuda
+Called with args:
+Namespace(batch_size=32, checkepoch=1, cuda=True, decay_step=5, lr=0.001,
+max_epochs=20, num_workers=0, resize=224, resume=False,
+save_dir='load/', use_self=False)
+Dataset loaded
+Dataset loaded
+after epoch 1/20, train_loss: 27.176, train_acc: 0.08, test_loss: 26.007, test_acc: 0.00, time: 98.46
+after epoch 2/20, train_loss: 18.636, train_acc: 0.33, test_loss: 19.919, test_acc: 0.00, time: 98.78
+updated, epoch 3 saved
+after epoch 3/20, train_loss: 17.506, train_acc: 0.50, test_loss: 17.689, test_acc: 0.50, time: 98.23
+updated, epoch 4 saved
+after epoch 4/20, train_loss: 21.487, train_acc: 0.33, test_loss: 15.648, test_acc: 0.50, time: 100.56
+updated, epoch 5 saved
+after epoch 5/20, train_loss: 19.925, train_acc: 0.33, test_loss: 15.947, test_acc: 0.50, time: 98.94
+updated, epoch 6 saved
+after epoch 6/20, train_loss: 12.825, train_acc: 0.75, test_loss: 19.442, test_acc: 0.25, time: 98.32
+updated, epoch 7 saved
+after epoch 7/20, train_loss: 16.235, train_acc: 0.50, test_loss: 16.779, test_acc: 0.50, time: 98.07
+updated, epoch 8 saved
+after epoch 8/20, train_loss: 20.845, train_acc: 0.25, test_loss: 10.933, test_acc: 0.50, time: 98.42
+updated, epoch 9 saved
+after epoch 9/20, train_loss: 13.384, train_acc: 0.83, test_loss: 10.181, test_acc: 0.75, time: 98.40
+updated, epoch 10 saved
+after epoch 10/20, train_loss: 14.855, train_acc: 0.50, test_loss: 12.332, test_acc: 0.50, time: 98.19
+updated, epoch 11 saved
+after epoch 11/20, train_loss: 7.985, train_acc: 0.92, test_loss: 8.808, test_acc: 0.75, time: 88.99
+updated, epoch 12 saved
+after epoch 12/20, train_loss: 11.362, train_acc: 0.92, test_loss: 6.650, test_acc: 1.00, time: 84.66
+updated, epoch 13 saved
+after epoch 13/20, train_loss: 7.156, train_acc: 0.92, test_loss: 8.826, test_acc: 1.00, time: 86.08
+updated, epoch 14 saved
+after epoch 14/20, train_loss: 12.299, train_acc: 0.67, test_loss: 11.068, test_acc: 0.75, time: 84.84
+updated, epoch 15 saved
+after epoch 15/20, train_loss: 8.629, train_acc: 0.92, test_loss: 9.789, test_acc: 1.00, time: 84.95
+updated, epoch 16 saved
+after epoch 16/20, train_loss: 7.374, train_acc: 1.00, test_loss: 8.059, test_acc: 0.75, time: 86.40
+updated, epoch 17 saved
+after epoch 17/20, train_loss: 10.269, train_acc: 0.75, test_loss: 10.281, test_acc: 0.75, time: 84.91
+updated, epoch 18 saved
+after epoch 18/20, train_loss: 6.197, train_acc: 1.00, test_loss: 6.909, test_acc: 0.75, time: 92.42
+updated, epoch 19 saved
+after epoch 19/20, train_loss: 5.619, train_acc: 0.92, test_loss: 9.545, test_acc: 1.00, time: 101.07
+updated, epoch 20 saved
+after epoch 20/20, train_loss: 5.265, train_acc: 1.00, test_loss: 10.129, test_acc: 1.00, time: 98.61
