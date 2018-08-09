@@ -242,7 +242,7 @@ if __name__ == '__main__':
 	train_loader = torch.utils.data.DataLoader(train_set, batch_size=args.batch_size,
 		shuffle=True, num_workers=args.num_workers)
 	test_loader = torch.utils.data.DataLoader(test_set, batch_size=args.batch_size,
-		shuffle=False, num_workers=args.num_workers)
+		shuffle=True, num_workers=args.num_workers)
 
 	n_images = 11788
 	n_classes = 200

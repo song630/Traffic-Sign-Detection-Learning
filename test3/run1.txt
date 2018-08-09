@@ -10,6 +10,9 @@ GPU-Util: 最高40% 一直在波动 有时是0%
   output = model(data)
   output = F.log_softmax(output, dim=1)
   loss = F.nll_loss(output, target)
+4.图片定位的结果存放在output目录下
+  图片定位结果除了一张图片(result6.jpg)之外较好
+  分类结果差
 
 输出:
 $ CUDA_VISIBLE_DEVICES=3 python main3.py --cuda
