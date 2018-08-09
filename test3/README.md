@@ -4,3 +4,4 @@
 * Architecture: Add two branches after `resnet18`
 * Firstly implement with FC layers at both ends, then replace them with conv layers
 * Adjust the way in which images are pre-processed
+* The localization results are put in directory `output` (green-ground truth, blue-prediction)

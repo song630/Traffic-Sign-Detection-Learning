@@ -1,0 +1,80 @@
+将原数据集的PASCAL-VOC-2007转为TT100K
+1.PASCAL-VOC-2007
+  (1)20 classes:
+     Person: person
+     Animal: bird, cat, cow, dog, horse, sheep
+     Vehicle: aeroplane, bicycle, boat, bus, car, motorbike, train
+     Indoor: bottle, chair, dining table, potted plant, sofa, tv/monitor
+  (2)共有9963张图片 包含了24640个标注的对象
+  (3)数据集被分割为50%的训练验证集(5011)和另外50%的测试集(4952)
+  (4)评估方法在matlab文件中给出
+  (5)每一张图片都有一个xml标注文件 记录了bbox和label
+  (6)特殊标注:
+     有遮挡的会被标注为truncated
+	 还有光线强度和透明度等等
+  (7)目录结构:
+     数据集的主目录在faster-rcnn.pytorch/data/VOCdevkit2007/VOC2007/下
+	 进入后包括了Annotations, ImageSets, JPEGImages, SegmentationClass, SegmentationObject
+	 a.Annotations下是标注文件从000001.xml-009963.xml
+	   有尺寸信息(w, h, channels)
+	   有多个物体的标注(xmin, ymin, xmax, ymax)
+	 b.ImageSets中有3个目录 只关注Main即可(存放物理类别的label)
+	   里面有20个类*每个类4种数据(_test, _train, _trainval, _val)=80个txt文件
+	   里面有2个字段: 图像编号和正负样本(1/-1)
+	 c.JPEGImages: 000000.jpg-009963.jpg 大小多为500*375, 375*500等
+2.TT100K
+  (1)100000张图片 包含了30000个信号牌示例 尺寸为2048*2048
+  (2)目录结构: tt100k/下包含6个目录: data, nosign_1-5
+     data下有annotations.json, lmdb, marks, other, test, train
+	 a.test下有: 若干id.jpg文件, ids.txt(训练集的图片编号), Thumbs.db
+	 b.train下和上面类似
+	 c.other下和上面类似 但不清楚作用
+	 d.annotations.json: 包含了所有图片的信息
+	   如一张图片的: 相对路径 每个信号牌实例的类别和类别
+  (3)网站上提供了evaluate方法 见http://cg.cs.tsinghua.edu.cn/traffic-sign/tutorial.html
+====================
+3.例: TT100K中一张图片的标注(所有字段以及路径有双引号)
+{id: 78307,
+ objects:
+   [{bbox:
+      {xmax: 1116.309,
+       xmin: 1097.11,
+       ymax: 987.6815,
+       ymin: 968.116},
+     category: p5,
+     ellipse:,
+     ellipse_org: []
+	},
+    {bbox: 
+	  {xmax: 1394.2022,
+       xmin: 1318.11,
+       ymax: 1000.3625,
+       ymin: 931.884},
+     category: w16,
+     polygon: []
+	},
+    {bbox:
+	  {xmax: 2051.0886,
+       xmin: 1995.29,
+       ymax: 944.9281,
+       ymin: 888.406},
+     category: w15,
+     polygon: []
+	}
+   ],
+ path: test/78307.jpg
+}
+4.网站上给出的信号牌类别:
+i1,i10,i11,i12,i13,i14,i15,i2,i3,i4,i5,il100,il110,il50,il60,il70,il80,il90,
+io,ip,p1,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p2,p20,p21,p22,p23,p24,p25,
+p26,p27,p28,p3,p4,p5,p6,p7,p8,p9,pa10,pa12,pa13,pa14,pa8,pb,pc,pg,ph1.5,ph2,
+ph2.1,ph2.2,ph2.4,ph2.5,ph2.8,ph2.9,ph3,ph3.2,ph3.5,ph3.8,ph4,ph4.2,ph4.3,
+ph4.5,ph4.8,ph5,ph5.3,ph5.5,pl10,pl100,pl110,pl120,pl15,pl20,pl25,pl30,pl35,
+pl40,pl5,pl50,pl60,pl65,pl70,pl80,pl90,pm10,pm13,pm15,pm1.5,pm2,pm20,pm25,pm30,
+pm35,pm40,pm46,pm5,pm50,pm55,pm8,pn,pne,po,pr10,pr100,pr20,pr30,pr40,pr45,pr50,
+pr60,pr70,pr80,ps,pw2,pw2.5,pw3,pw3.2,pw3.5,pw4,pw4.2,pw4.5,w1,w10,w12,w13,w16,
+w18,w20,w21,w22,w24,w28,w3,w30,w31,w32,w34,w35,w37,w38,w41,w42,w43,w44,w45,w46,
+w47,w48,w49,w5,w50,w55,w56,w57,w58,w59,w60,w62,w63,w66,w8,wo,i6,i7,i8,i9,ilx,
+p29,w29,w33,w36,w39,w4,w40,w51,w52,w53,w54,w6,w61,w64,w65,w67,w7,w9,pax,pd,pe,
+phx,plx,pmx,pnl,prx,pwx,w11,w14,w15,w17,w19,w2,w23,w25,w26,w27,pl0,pl4,pl3,
+pm2.5,ph4.4,pn40,ph3.3,ph2.6
