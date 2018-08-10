@@ -1,0 +1,42 @@
+测试:
+使用DetectionNet_15.pth:
+分类的正确率提升到50%(下面的2, 5, 24, 70预测正确)
+$ CUDA_VISIBLE_DEVICES=2 python inf.py --cuda
+loading checkpoint load/DetectionNet_15.pth
+loaded checkpoint load/DetectionNet_15.pth
+
+(若使用DetectionNet_19.pth正确率为50%)
+(若使用DetectionNet_16.pth正确率为62.5%)
+
+(下面的输出是使用DetectionNet_15.pth的)
+index: 53
+[torch.LongTensor of size 1x1]
+class: 053.Western_Grebe
+
+index: 2
+[torch.LongTensor of size 1x1]
+class: 002.Laysan_Albatross
+
+index: 58
+[torch.LongTensor of size 1x1]
+class: 058.Pigeon_Guillemot
+
+index: 5
+[torch.LongTensor of size 1x1]
+class: 005.Crested_Auklet
+
+index: 69
+[torch.LongTensor of size 1x1]
+class: 069.Rufous_Hummingbird
+
+index: 24
+[torch.LongTensor of size 1x1]
+class: 024.Red_faced_Cormorant
+
+index: 15
+[torch.LongTensor of size 1x1]
+class: 015.Lazuli_Bunting
+
+index: 70
+[torch.LongTensor of size 1x1]
+class: 070.Green_Violetear

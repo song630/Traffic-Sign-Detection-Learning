@@ -82,7 +82,7 @@ def get_train_test(root=data_dir):
 			# === drop images with index larger then 11729:
 			# === some images of class 200 seem to have unknown problems.
 			if int(index) >= 11729: break
-			if is_train == '1'
+			if is_train == '1':
 				train_indexes.append(int(index))
 			else:
 				test_indexes.append(int(index))
@@ -251,8 +251,8 @@ if __name__ == '__main__':
 	else: # default
 		model = models.resnet18(pretrained=True)
 	net = DetectionNet(model, n_classes)
-	criterion1 = nn.SmoothL1Loss().cuda() # predicted bbox
-	criterion2 = nn.CrossEntropyLoss()
+	criterion1 = nn.SmoothL1Loss() # predicted bbox
+	criterion2 = nn.NLLLoss() # === updated
 	optimizer = torch.optim.Adam(net.parameters(), lr=args.lr, weight_decay=1e-4)
 	scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.decay_step, gamma=0.1)
 
@@ -288,6 +288,7 @@ if __name__ == '__main__':
 			else:
 				raise Exception('No cuda')
 			outputs1, outputs2 = net(inputs)
+			outputs2 = nn.functional.log_softmax(outputs2, dim=1) # === updated
 			# loss1, loss2: FloatTensor of size 1, so are loss1.mean() and loss2.mean()
 			loss1 = criterion1(outputs1, targets1) # bbox
 			loss2 = criterion2(outputs2, targets2) # classification
@@ -310,23 +311,24 @@ if __name__ == '__main__':
 			else:
 				raise Exception('No cuda')
 			outputs1, outputs2 = net(inputs)
+			outputs2 = nn.functional.log_softmax(outputs2, dim=1)
 			loss1 = criterion1(outputs1, targets1) # bbox
 			loss2 = criterion2(outputs2, targets2) # classification
 			loss = loss1.mean() + loss2.mean()
 			test_loss = loss.data[0]
 			test_acc = compute_acc(outputs1.cpu().data, targets1.cpu().data, args.resize)
 
-		if test_acc > best_acc:
-			best_acc = test_acc
+		#if test_acc > best_acc:
+			#best_acc = test_acc
 			# save current state:
-			save_name = args.save_dir + 'DetectionNet_{}.pth'.format(epoch)
-			torch.save({
-				'epoch': epoch + 1,
-				'model': net.state_dict(),
-				'optimizer': optimizer.state_dict()},
-				save_name
-			)
-			print('updated, epoch {} saved'.format(epoch + 1))
+		save_name = args.save_dir + 'DetectionNet_{}.pth'.format(epoch)
+		torch.save({
+			'epoch': epoch + 1,
+			'model': net.state_dict(),
+			'optimizer': optimizer.state_dict()},
+			save_name
+		)
+		print('updated, epoch {} saved'.format(epoch + 1))
 
 		end = time.time()
 		print('after epoch {}/{}, train_loss: {:.3f}, train_acc: {:.2f}, test_loss: {:.3f}, test_acc: {:.2f}, time: {:.2f}'.format(epoch + 1, args.max_epochs, train_loss, train_acc, test_loss, test_acc, end - start))

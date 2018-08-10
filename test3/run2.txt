@@ -1,0 +1,51 @@
+显存: 2205M
+GPU-Util: 最高40% 一直在波动 有时是0%
+82-83s/epoch
+
+$ CUDA_VISIBLE_DEVICES=2 python main3.py --cuda --lr 0.0005 --decay 8
+Called with args:
+Namespace(batch_size=32, checkepoch=1, cuda=True, decay_step=8, lr=0.0005,
+max_epochs=20, num_workers=0, resize=224, resume=False,
+save_dir='load/', use_self=False)
+Dataset loaded
+Dataset loaded
+updated, epoch 1 saved
+after epoch 1/20, train_loss: 48.011, train_acc: 0.00, test_loss: 31.334, test_acc: 0.00, time: 83.65
+updated, epoch 2 saved
+after epoch 2/20, train_loss: 21.419, train_acc: 0.33, test_loss: 21.124, test_acc: 0.25, time: 82.62
+updated, epoch 3 saved
+after epoch 3/20, train_loss: 15.761, train_acc: 0.33, test_loss: 10.835, test_acc: 0.75, time: 82.82
+updated, epoch 4 saved
+after epoch 4/20, train_loss: 10.668, train_acc: 0.83, test_loss: 17.223, test_acc: 0.75, time: 82.55
+updated, epoch 5 saved
+after epoch 5/20, train_loss: 14.522, train_acc: 0.42, test_loss: 8.843, test_acc: 1.00, time: 82.70
+updated, epoch 6 saved
+after epoch 6/20, train_loss: 12.081, train_acc: 0.75, test_loss: 14.078, test_acc: 0.50, time: 82.63
+updated, epoch 7 saved
+after epoch 7/20, train_loss: 10.962, train_acc: 0.92, test_loss: 12.029, test_acc: 0.75, time: 82.89
+updated, epoch 8 saved
+after epoch 8/20, train_loss: 11.457, train_acc: 0.83, test_loss: 6.617, test_acc: 1.00, time: 82.50
+updated, epoch 9 saved
+after epoch 9/20, train_loss: 7.245, train_acc: 1.00, test_loss: 9.676, test_acc: 0.75, time: 82.87
+updated, epoch 10 saved
+after epoch 10/20, train_loss: 7.099, train_acc: 1.00, test_loss: 10.950, test_acc: 0.50, time: 82.67
+updated, epoch 11 saved
+after epoch 11/20, train_loss: 11.785, train_acc: 0.58, test_loss: 9.130, test_acc: 0.50, time: 82.87
+updated, epoch 12 saved
+after epoch 12/20, train_loss: 5.869, train_acc: 0.92, test_loss: 12.657, test_acc: 0.50, time: 82.98
+updated, epoch 13 saved
+after epoch 13/20, train_loss: 14.109, train_acc: 0.67, test_loss: 8.327, test_acc: 0.75, time: 82.14
+updated, epoch 14 saved
+after epoch 14/20, train_loss: 6.077, train_acc: 0.83, test_loss: 9.865, test_acc: 0.50, time: 83.04
+updated, epoch 15 saved
+after epoch 15/20, train_loss: 11.886, train_acc: 0.83, test_loss: 6.115, test_acc: 1.00, time: 82.78
+updated, epoch 16 saved
+after epoch 16/20, train_loss: 5.306, train_acc: 1.00, test_loss: 5.602, test_acc: 1.00, time: 83.31
+updated, epoch 17 saved
+after epoch 17/20, train_loss: 5.836, train_acc: 1.00, test_loss: 10.985, test_acc: 0.75, time: 82.93
+updated, epoch 18 saved
+after epoch 18/20, train_loss: 5.738, train_acc: 1.00, test_loss: 10.307, test_acc: 1.00, time: 83.25
+updated, epoch 19 saved
+after epoch 19/20, train_loss: 5.999, train_acc: 0.92, test_loss: 5.728, test_acc: 0.75, time: 82.73
+updated, epoch 20 saved
+after epoch 20/20, train_loss: 5.087, train_acc: 0.92, test_loss: 7.336, test_acc: 0.75, time: 82.38

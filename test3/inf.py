@@ -94,11 +94,12 @@ if __name__ == '__main__':
 		net.eval()
 		inputs = Variable(inputs.cuda())
 		outputs1, outputs2 = net(inputs)
+		outputs2 = nn.functional.log_softmax(outputs2, dim=1)
 		#print('outputs1:', outputs1.cpu().data) # FloatTensor of size 1(row)*4(column)
 		#print('outputs2:', outputs2.cpu().data) # FloatTensor of size 1*200
-		index = outputs2.data.cpu().numpy().argmax() + 1
+		index = outputs2.data.cpu().max(1, keepdim=True)[1] # pred
 		#print('index:', index)
-		print('class:', classes_map[index])
+		print('class:', classes_map[index[0][0]])
 		pred = bbox_inv_transform(outputs1.data.cpu(), sizes[i][0], sizes[i][1])
 		show(cv2.imread(data_dir + j), bboxes[i], pred, i + 1)
 
