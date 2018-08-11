@@ -1,0 +1,165 @@
+$ CUDA_VISIBLE_DEVICES=2 python trainval_net.py --dataset tt100k --net res101
+--cuda --epochs 8 --bs 2 --lr 0.004 --lr_decay_step 6
+后面和box相关的loss变成了NA 应该是anchor的参数设置不合适
+anchor是:
+['ANCHOR_SCALES', '[4, 8, 16, 32]', 'ANCHOR_RATIOS', '[0.5,1,2]', 'MAX_NUM_GT_BOXES', '30']
+改为下面的参数后仍存在相同问题:
+['ANCHOR_SCALES', '[16, 32, 64, 128]', 'ANCHOR_RATIOS', '[0.5,1,2]', 'MAX_NUM_GT_BOXES', '30']
+
+Called with args:
+Namespace(batch_size=2, checkepoch=1, checkpoint=0, checkpoint_interval=10000,
+checksession=1, class_agnostic=False, cuda=True, dataset='tt100k', disp_interval=100,
+large_scale=False, lr=0.004, lr_decay_gamma=0.1, lr_decay_step=6, mGPUs=False,
+max_epochs=8, net='res101', num_workers=0, optimizer='sgd', resume=False,
+save_dir='/to_load/', session=1, start_epoch=1, use_tfboard=False)
+Using config:
+{'ANCHOR_RATIOS': [0.5, 1, 2],
+ 'ANCHOR_SCALES': [4, 8, 16, 32],
+ 'CROP_RESIZE_WITH_MAX_POOL': False,
+ 'CUDA': False,
+ 'DATA_DIR': 'faster-rcnn.pytorch/data',
+ 'DEDUP_BOXES': 0.0625,
+ 'EPS': 1e-14,
+ 'EXP_DIR': 'res101',
+ 'FEAT_STRIDE': [16],
+ 'GPU_ID': 0,
+ 'MATLAB': 'matlab',
+ 'MAX_NUM_GT_BOXES': 30,
+ 'MOBILENET': {'DEPTH_MULTIPLIER': 1.0,
+               'FIXED_LAYERS': 5,
+               'REGU_DEPTH': False,
+               'WEIGHT_DECAY': 4e-05},
+ 'PIXEL_MEANS': array([[[102.9801, 115.9465, 122.7717]]]),
+ 'POOLING_MODE': 'align',
+ 'POOLING_SIZE': 7,
+ 'RESNET': {'FIXED_BLOCKS': 1, 'MAX_POOL': False},
+ 'RNG_SEED': 3,
+ 'ROOT_DIR': 'faster-rcnn.pytorch',
+ 'TEST': {'BBOX_REG': True,
+          'HAS_RPN': True,
+          'MAX_SIZE': 1000,
+          'MODE': 'nms',
+          'NMS': 0.3,
+          'PROPOSAL_METHOD': 'gt',
+          'RPN_MIN_SIZE': 16,
+          'RPN_NMS_THRESH': 0.7,
+          'RPN_POST_NMS_TOP_N': 300,
+          'RPN_PRE_NMS_TOP_N': 6000,
+          'RPN_TOP_N': 5000,
+          'SCALES': [600],
+          'SVM': False},
+ 'TRAIN': {'ASPECT_GROUPING': False,
+           'BATCH_SIZE': 128,
+           'BBOX_INSIDE_WEIGHTS': [1.0, 1.0, 1.0, 1.0],
+           'BBOX_NORMALIZE_MEANS': [0.0, 0.0, 0.0, 0.0],
+           'BBOX_NORMALIZE_STDS': [0.1, 0.1, 0.2, 0.2],
+           'BBOX_NORMALIZE_TARGETS': True,
+           'BBOX_NORMALIZE_TARGETS_PRECOMPUTED': True,
+           'BBOX_REG': True,
+           'BBOX_THRESH': 0.5,
+           'BG_THRESH_HI': 0.5,
+           'BG_THRESH_LO': 0.0,
+           'BIAS_DECAY': False,
+           'BN_TRAIN': False,
+           'DISPLAY': 20,
+           'DOUBLE_BIAS': False,
+           'FG_FRACTION': 0.25,
+           'FG_THRESH': 0.5,
+           'GAMMA': 0.1,
+           'HAS_RPN': True,
+           'IMS_PER_BATCH': 1,
+           'LEARNING_RATE': 0.001,
+           'MAX_SIZE': 1000,
+           'MOMENTUM': 0.9,
+           'PROPOSAL_METHOD': 'gt',
+           'RPN_BATCHSIZE': 256,
+           'RPN_BBOX_INSIDE_WEIGHTS': [1.0, 1.0, 1.0, 1.0],
+           'RPN_CLOBBER_POSITIVES': False,
+           'RPN_FG_FRACTION': 0.5,
+           'RPN_MIN_SIZE': 8,
+           'RPN_NEGATIVE_OVERLAP': 0.3,
+           'RPN_NMS_THRESH': 0.7,
+           'RPN_POSITIVE_OVERLAP': 0.7,
+           'RPN_POSITIVE_WEIGHT': -1.0,
+           'RPN_POST_NMS_TOP_N': 2000,
+           'RPN_PRE_NMS_TOP_N': 12000,
+           'SCALES': [600],
+           'SNAPSHOT_ITERS': 5000,
+           'SNAPSHOT_KEPT': 3,
+           'SNAPSHOT_PREFIX': 'res101_faster_rcnn',
+           'STEPSIZE': [30000],
+           'SUMMARY_INTERVAL': 180,
+           'TRIM_HEIGHT': 600,
+           'TRIM_WIDTH': 600,
+           'TRUNCATED': False,
+           'USE_ALL_GT': True,
+           'USE_FLIPPED': True,
+           'USE_GT': False,
+           'WEIGHT_DECAY': 0.0001},
+ 'USE_GPU_NMS': True}
+Loaded dataset `tt100k_train` for training
+Set proposal method: gt
+Appending horizontally-flipped training examples...
+tt100k_train gt roidb loaded from /cache/tt100k_train_gt_roidb.pkl
+done
+Preparing training data...
+done
+before filtering, there are 12210 images...
+after filtering, there are 12210 images...
+12210 roidb entries
+Loading pretrained weights from data/pretrained_model/resnet101_caffe.pth
+rpn.py:90: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
+  rpn_cls_prob_reshape = F.softmax(rpn_cls_score_reshape)
+faster_rcnn.py:102: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
+  cls_prob = F.softmax(cls_score)
+[session 1][epoch  1][iter    0/6105] loss: 6.7137, lr: 4.00e-03
+                        fg/bg=(3/253), time cost: 1.358683
+                        rpn_cls: 0.7767, rpn_box: 0.1831, rcnn_cls: 5.7533, rcnn_box 0.0005
+[session 1][epoch  1][iter  100/6105] loss: 0.6553, lr: 4.00e-03
+                        fg/bg=(7/249), time cost: 51.179737
+                        rpn_cls: 0.0598, rpn_box: 0.0431, rcnn_cls: 0.1532, rcnn_box 0.0083
+[session 1][epoch  1][iter  200/6105] loss: 0.3440, lr: 4.00e-03
+                        fg/bg=(5/251), time cost: 50.745154
+                        rpn_cls: 0.0406, rpn_box: 0.0524, rcnn_cls: 0.0979, rcnn_box 0.0004
+[session 1][epoch  1][iter  300/6105] loss: 0.3355, lr: 4.00e-03
+                        fg/bg=(10/246), time cost: 50.683376
+                        rpn_cls: 0.0432, rpn_box: 0.0341, rcnn_cls: 0.2688, rcnn_box 0.0391
+[session 1][epoch  1][iter  400/6105] loss: 0.3678, lr: 4.00e-03
+                        fg/bg=(6/250), time cost: 50.851524
+                        rpn_cls: 0.0327, rpn_box: 0.0465, rcnn_cls: 0.1428, rcnn_box 0.0096
+[session 1][epoch  1][iter  500/6105] loss: nan, lr: 4.00e-03
+                        fg/bg=(4/252), time cost: 51.131484
+                        rpn_cls: 0.6582, rpn_box: nan, rcnn_cls: 0.1242, rcnn_box 0.0025
+[session 1][epoch  1][iter  600/6105] loss: nan, lr: 4.00e-03
+                        fg/bg=(13/243), time cost: 50.765096
+                        rpn_cls: 0.5607, rpn_box: nan, rcnn_cls: 0.4743, rcnn_box 0.0008
+[session 1][epoch  1][iter  700/6105] loss: nan, lr: 4.00e-03
+                        fg/bg=(7/249), time cost: 50.703534
+                        rpn_cls: 0.4264, rpn_box: nan, rcnn_cls: 0.2279, rcnn_box 0.0000
+[session 1][epoch  1][iter  800/6105] loss: nan, lr: 4.00e-03
+                        fg/bg=(8/248), time cost: 50.516887
+                        rpn_cls: 0.4266, rpn_box: nan, rcnn_cls: 0.2815, rcnn_box 0.0000
+[session 1][epoch  1][iter  900/6105] loss: nan, lr: 4.00e-03
+                        fg/bg=(5/251), time cost: 50.449586
+                        rpn_cls: 0.3399, rpn_box: nan, rcnn_cls: 0.1679, rcnn_box 0.0001
+[session 1][epoch  1][iter 1000/6105] loss: nan, lr: 4.00e-03
+                        fg/bg=(5/251), time cost: 50.470066
+                        rpn_cls: 0.3327, rpn_box: nan, rcnn_cls: 0.1681, rcnn_box 0.0000
+[session 1][epoch  1][iter 1100/6105] loss: nan, lr: 4.00e-03
+                        fg/bg=(8/248), time cost: 50.539403
+                        rpn_cls: 0.2891, rpn_box: nan, rcnn_cls: 0.2641, rcnn_box 0.0000
+[session 1][epoch  1][iter 1200/6105] loss: nan, lr: 4.00e-03
+                        fg/bg=(2/254), time cost: 50.410561
+                        rpn_cls: 0.2292, rpn_box: nan, rcnn_cls: 0.0807, rcnn_box 0.0000
+[session 1][epoch  1][iter 1300/6105] loss: nan, lr: 4.00e-03
+                        fg/bg=(5/251), time cost: 50.428931
+                        rpn_cls: 0.2393, rpn_box: nan, rcnn_cls: 0.1644, rcnn_box 0.0000
+[session 1][epoch  1][iter 1400/6105] loss: nan, lr: 4.00e-03
+                        fg/bg=(8/248), time cost: 50.378597
+                        rpn_cls: 0.2687, rpn_box: nan, rcnn_cls: 0.2707, rcnn_box 0.0000
+[session 1][epoch  1][iter 1500/6105] loss: nan, lr: 4.00e-03
+                        fg/bg=(4/252), time cost: 50.656441
+                        rpn_cls: 0.2426, rpn_box: nan, rcnn_cls: 0.1272, rcnn_box 0.0000
+[session 1][epoch  1][iter 1600/6105] loss: nan, lr: 4.00e-03
+                        fg/bg=(4/252), time cost: 49.312459
+                        rpn_cls: 0.2093, rpn_box: nan, rcnn_cls: 0.1601, rcnn_box 0.0000
