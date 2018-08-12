@@ -143,12 +143,16 @@ class tt100k(imdb):
 					# boxes[:, 2]=widths[i]-oldx1-1;
 					# which will cause an abortion within the same function:
 					# assert(boxes[:, 2] >= boxes[:, 0]).all()
+					if x1 < 0:
+						x1 = 0.0
+					if y1 < 0:
+						y1 = 0.0
 					x2 = bbox['xmax'] - 1
-					if x2 >= 2048:
-						x2 = 2047
+					if x2 >= 2047:
+						x2 = 2047.0
 					y2 = bbox['ymax'] - 1
-					if y2 >= 2048:
-						y2 = 2047
+					if y2 >= 2047:
+						y2 = 2047.0
 					bboxes.append([x1, y1, x2, y2])
 			n_objs = len(objects)
 

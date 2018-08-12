@@ -1,0 +1,21 @@
+在run2的基础上进一步约束roidb同时降低lr
+将大小过小的(<15)bbox都舍去 减小产生nan的可能
+在目录traffic-sign/tt100k-test2/下
+
+$ cat README2.txt
+args:
+batch_size=2
+lr=1e-4
+lr_decay_step=6
+max_epochs=8
+net=res101
+optimizer=sgd
+anchor scales: [16, 32, 64, 128, 256], 50
+in tt100k.py, (x1<0, y1<0, x2>2047, y2>2047) are checked
+in append_flipped_images in imdb.py, ([2]>2047, [3]>2047) are checked
+([0]<0, [1]<0) will not happen
+in lib/roi_data_layer/roibatchLoader.py,
+line 190 has been changed (15 is the minimum width & height).
+
+$ CUDA_VISIBLE_DEVICES=2 nohup python trainval_net.py --dataset tt100k --net res101 --cuda
+--epochs 8 --bs 2 --lr 0.0001 --lr_decay_step 6 > results.txt 2>&1 &
