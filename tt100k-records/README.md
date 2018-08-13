@@ -12,6 +12,7 @@
 * tt100k.py is in parallel with pascal_voc.py, coco.py, etc.
 
 ### How to get start on TT100K
+---
 1. tt100k.py.
 2. Insert the following lines into trainval_net.py:
 ```
@@ -74,7 +75,7 @@ run3 | 1e-4 | 8  | True | ac: 27.24<br>re: 23.87 | ac: 38.28<br>re: 20.72 | ac: 
 run4 | 5e-4 | 10 | True | ac: 39.75<br>re: 24.89 | ac: 48.39<br>re: 22.86 | ac: 55.60<br>re: 21.33 | ac: 61.63<br>re: 20.12 | ac: 66.44<br>re: 19.02
 
 1. Notice:
-**Dataset: TT100K**
+* **Dataset: TT100K**
 * No.: Number of run. Run1 has been ruled out since loss became nan.
 * lr: Learning rate.
 * ep: Max epoch.
