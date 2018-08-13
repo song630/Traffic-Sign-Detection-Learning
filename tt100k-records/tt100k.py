@@ -3,7 +3,7 @@ import datasets.ds_utils as ds_utils
 from model.utils.config import cfg
 
 import sys
-sys.path.append('/.../lib/datasets/')
+sys.path.append('.../lib/datasets/')
 from datasets.anno_func import eval_annos # evaluation function
 
 import os
@@ -48,7 +48,7 @@ class tt100k(imdb):
 		)
 		# construct a class map
 		self._class_to_ind = dict(list(zip(self.classes, list(range(self.num_classes)))))
-		self._image_index = self._load_image_set_index() # to be defined later
+		self._image_index = self._load_image_set_index()
 		self._roidb_handler = self.gt_roidb
 		# cleanup: will remove result files
 		self.config = {'use_salt': False, 'cleanup': True}
@@ -78,7 +78,7 @@ class tt100k(imdb):
 
 
 	def _get_res_anno_file(self):
-		return os.path.join(self._data_path, 'res.json') # detection result
+		return os.path.join(self._data_path, 'res3.json') # detection result
 
 
 	# get path of an image whose index is specified:
@@ -178,9 +178,11 @@ class tt100k(imdb):
 	# test samples are not shuffled
 	def _write_tt100k_results_file(self, all_boxes):
 		results = {'imgs': {}} # the root object to be converted to json
-		for cls_ind in len(all_boxes):
-			for img_ind in len(all_boxes[cls_ind]):
-				dets = all_boxes[cls_ind][img_ind] # detections
+		for cls_ind, cl in enumerate(self._classes):
+			if cl == '__background__': # pass the __background__ class
+				continue
+			for ind, img_ind in enumerate(self._image_index): # img_ind: str
+				dets = all_boxes[cls_ind][ind] # detections
 				# dets: output example:
 				"""
 				index: 009963
@@ -201,16 +203,19 @@ class tt100k(imdb):
 				# every 'dets' is a 5-element list, it may be an empty [].
 				if dets == []:
 					continue
-				for k in xrange(dets.shape[0]):
+				for k in range(dets.shape[0]): # === do not use xrange, it's from python 3
+					# === convert np.float32 to float, or it cannot be serialized to json
 					index, score, xmin, ymin, xmax, ymax = \
-						str(self._image_index[img_ind]), \
-						dets[k, -1], dets[k, 0], dets[k, 1], dets[k, 2], dets[k, 3]
-					category = self._class_to_ind[cls_ind]
-					obj = {'category': category, 'score': score, \
+						img_ind, float(dets[k, -1]), \
+						float(dets[k, 0]), float(dets[k, 1]), float(dets[k, 2]), float(dets[k, 3])
+					# category = self._class_to_ind[cls_ind]
+					obj = {'category': cl, 'score': score, \
 						'bbox': {'xmin': xmin, 'ymin': ymin, 'xmax': xmax, 'ymax': ymax}}
-					if not results['imgs'].has_key(index):
+					if index not in results['imgs']:
+						results['imgs'][index] = {} # === must construct an object first
+						results['imgs'][index]['id'] = int(index)
 						results['imgs'][index]['objects'] = [] # init
-					results['img'][index]['objects'].append(obj) # an image has multiple objects
+					results['imgs'][index]['objects'].append(obj) # an image has multiple objects
 		filename = self._get_res_anno_file()
 		with open(filename, 'w') as f:
 			json.dump(results, f)
@@ -219,7 +224,7 @@ class tt100k(imdb):
 
 	def evaluate_detections(self, all_boxes, output_dir):
 		self._write_tt100k_results_file(all_boxes)
-		gt_anno_file = self._get_anno_file()
+		gt_anno_file = self._get_gt_anno_file()
 		res_anno_file = self._get_res_anno_file()
 		gt_annos = json.loads(open(gt_anno_file).read())
 		res_annos = json.loads(open(res_anno_file).read())

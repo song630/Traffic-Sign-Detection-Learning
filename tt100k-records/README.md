@@ -12,7 +12,6 @@
 * tt100k.py is in parallel with pascal_voc.py, coco.py, etc.
 
 ### How to get start on TT100K
----
 1. tt100k.py.
 2. Insert the following lines into trainval_net.py:
 ```
@@ -66,3 +65,26 @@ for j in range(len(boxes)):
 ```
 not_keep = ((gt_boxes[:,2] - gt_boxes[:,0]) < 15) & ((gt_boxes[:,3] - gt_boxes[:,1]) < 15)
 ```
+
+## Results:
+No. | lr | ep | box limit | 0.1 | 0.2 | 0.3 | 0.4 | 0.5
+----|----|----| ---- | ---- | ---- | ---- | ---- | ----
+run2 | 5e-4 | 8  | False | ac: 28.43<br>re: 52.29 | ac: 40.37<br>re: 46.62 | ac: 49.57<br>re: 42.35 | ac: 57.57<br>re: 38.55 | ac: 64.36<br>re: 35.54
+run3 | 1e-4 | 8  | True | ac: 27.24<br>re: 23.87 | ac: 38.28<br>re: 20.72 | ac: 47.46<br>re: 18.07 | ac: 56.70<br>re: 16.21 | ac: 65.28<br>re: 14.25
+run4 | 5e-4 | 10 | True | ac: 39.75<br>re: 24.89 | ac: 48.39<br>re: 22.86 | ac: 55.60<br>re: 21.33 | ac: 61.63<br>re: 20.12 | ac: 66.44<br>re: 19.02
+
+1. Notice:
+**Dataset: TT100K**
+* No.: Number of run. Run1 has been ruled out since loss became nan.
+* lr: Learning rate.
+* ep: Max epoch.
+* box limit: (in line #190, lib/roi_data_layer/roibatchLoader.py) Whether to limit the size of box less than 15.
+* 0.1-0.5: (in anno_func.py) Value of `minscore` as a parameter of function `eval_annos`.
+* ac, re: Accuracy and Recall, respectively.
+
+2. Other default parameters or runtime situations:
+* `ANCHOR_SCALES` and `'MAX_NUM_GT_BOXES` are all `[16, 32, 64, 128, 256]` and 50.
+* `atch_size` is 2, `net` is `res101`, and `lr_decay_step` is 6.
+* Image size is 2048 * 2048.
+* Memory occupied is between 3000MB and 4000MB.
+* Detection time is around 0.056s, and NMS time is around 0.087s.
