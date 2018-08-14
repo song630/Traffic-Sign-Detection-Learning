@@ -1,6 +1,6 @@
 ### Traffic-Sign-Detection-Learning
 ---
-**_Further modifications on this repo will be updated on Gitlab for about a month (before 9.15)._**
+**_Further modifications on this repo will be updated on Gitlab temporarily for about a month (before 9.15)._**
 
 [Mypage@Gitlab](https://gitlab.com/songcx2211)
 
