@@ -1,5 +1,9 @@
 ### Traffic-Sign-Detection-Learning
 ---
+**_Further modifications on this repo will be updated on Gitlab for about a month (before 9.15)._**
+
+[Mypage@Gitlab](https://gitlab.com/songcx2211)
+
 1. Choose `Faster RCNN` or `Mask RCNN` (rewrite and run)
 2. Understand `RoIAlign` & `RoIPooling`
 3. Read two papers:
