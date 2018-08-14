@@ -15,14 +15,14 @@
 ---
 1. tt100k.py.
 2. Insert the following lines into trainval_net.py:
-```
+``` python
 elif args.dataset == 'tt100k':
     args.imdb_name = 'tt100k_train'
     args.imdb_val_name = 'tt100k_test'
     args.set_cfgs = ['ANCHOR_SCALES', '[16, 32, 64, 128]', 'ANCHOR_RATIOS', '[0.5,1,2]', 'MAX_NUM_GT_BOXES', '30']
 ```
 3. Insert the following lines into factory.py:
-```
+``` python
 for year in ['2016']:
     for split in ['train', 'test']:
         name = 'tt100k_{}'.format(split)
@@ -47,14 +47,14 @@ fg/bg=(7/249), rpn_cls: 0.4264, rpn_box: nan, rcnn_cls: 0.2279, rcnn_box 0.0000
 * Box sizes should be restricted.
 4. Steps:
 * In function `_load_tt100k_annotation` in tt100k.py, insert following lines:
-```
+``` python
 if x1 < 0: x1 = 0.0
 if y1 < 0: y1 = 0.0
 if x2 >= 2047: x2 = 2047.0
 if y2 >= 2047: y2 = 2047.0
 ```
 * In function `append_flipped_images` in imdb.py, insert following lines:
-```
+``` python
 for j in range(len(boxes)):
     if boxes[j][2] > 2047:
         boxes[j][2] = 2047
@@ -63,7 +63,7 @@ for j in range(len(boxes)):
 
 ```
 * (Optional) Replace line 190 of roibatchLoader.py with:
-```
+``` python
 not_keep = ((gt_boxes[:,2] - gt_boxes[:,0]) < 15) & ((gt_boxes[:,3] - gt_boxes[:,1]) < 15)
 ```
 
